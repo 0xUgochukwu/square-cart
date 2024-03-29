@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Poller+One&family=Poppins&display=swap");
+@import url("https://cdn-uicons.flaticon.com/2.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css");
+@import url("https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css");
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+#root,
+.App,
+body,
+html {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: fixed;
+    background: #242424;
+    -webkit-user-select: none; /* Add this line to support Safari and Safari on iOS */
+    user-select: none;
+}
+
+.menuIcon {
+    min-width: unset !important;
+    margin-right: 15px;
+}
+
+.menuIcon i {
+    font-size: 20px;
+    color: black;
+    height: 20px;
+}
+
+.menuText span {
+    color: #000;
+    font-family: Poppins;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.activeItem {
+    background: black !important;
+}
+
+.activeItem i {
+    color: white !important;
+}
+
+.activeItem span {
+    color: white !important;
+}
+
+.notActiveItem {
+    background: unset;
+}
+
+.MuiBadge-badge {
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.tournament-bg {
+    /* background-image: url("/img/codm.jpg"); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    background: #1e1e1e;
+}
+
+.glass {
+    background-color: rgba(0, 0, 0, 0.801) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+}
+
+a,
+a:hover,
+a:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+/* Custom Tailwind  */
+.w-fill {
+    width: -webkit-fill-available;
+    width: stretch;
+}
+
+.h-fill {
+    height: -webkit-fill-available;
+    height: stretch;
+}

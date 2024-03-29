@@ -1,0 +1,22 @@
+version: "3.1"
+services:
+  mongodb:
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=12345
+      - MONGO_INITDB_DATABASE=snapx
+      - MONGO_REPLICA_HOST=localhost
+      - MONGO_REPLICA_PORT=27001
+    ports:
+      - 27001:27001
+  # if we choose to use postgres instead of mongodb
+  # postgres:
+  #   image: postgres
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=12345
+  #     - POSTGRES_DB=snapx
+  #   ports:
+  #     - 5432:5432

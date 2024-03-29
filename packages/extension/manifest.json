@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "Square",
+    "version": "1.0.0",
+    "icons": {
+        "128": "assets/f.png"
+    },
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": ["activeTab", "storage", "scripting", "background"],
+    "content_scripts": [
+        {
+            "js": ["src/tiktok/inject.js"],
+            "matches": ["https://www.tiktok.com/*/live"],
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "use_dynamic_url": true,
+            "matches": ["<all_urls>"],
+            "resources": ["**/*", "*"]
+        }
+    ]
+}

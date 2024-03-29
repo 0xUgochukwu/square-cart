@@ -1,0 +1,27 @@
+{
+    "name": "prospark-project",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "test": "",
+        "start": "cd packages/api && node ./dist/server.js",
+        "api": "yarn workspace api run dev",
+        "client": "yarn workspace client run dev",
+        "build": "yarn workspaces run build",
+        "watch": "yarn workspaces run watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "morgan": "^1.10.0",
+        "react-dom": "^18.2.0",
+        "react-square-web-payments-sdk": "^3.2.1",
+        "socket.io": "^4.7.5"
+    }
+}
