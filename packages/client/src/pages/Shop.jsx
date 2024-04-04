@@ -16,10 +16,13 @@ const Shop = ({ socket }) => {
     });
 
     socket.on("product", (item) => {
-        setProduct(item);
+        setProduct(null);
+        setTimeout(() => {
+            setProduct(item);
+        }, 1000);
     });
 
-    useEffect(() => {
+    const getProduct = () => {
         get.get(`/customer/item?username=${params.id}`).then((res) => {
             const { data } = res;
 
@@ -27,6 +30,16 @@ const Shop = ({ socket }) => {
                 setProduct(data.data);
             }
         });
+    };
+
+    useEffect(() => {
+        setInterval(() => {
+            getProduct();
+        }, 5000);
+    }, []);
+
+    useEffect(() => {
+        getProduct();
     }, [params.id]);
 
     return (

@@ -10,6 +10,7 @@ const Product = require("../models/products.model");
 const User = require("../models/users.model");
 const square = require("../services/square");
 const { randomUUID } = require("crypto");
+const Transaction = require("../models/transactions.model");
 const { LID } = process.env;
 
 class Controller {
@@ -49,11 +50,22 @@ class Controller {
     async buyItem(req, res) {
         try {
             const { productId } = req.params;
-            const quantity = (req.quantity || "1") + "";
+            const quantity = (req.body.quantity || "1") + "";
 
             const product = await Product.findOne({
                 _id: productId,
             });
+
+            if (product.quantity <= 0) {
+                return errorResponse(res, `Out of Stock!`);
+            }
+
+            if (product.quantity < Number(quantity)) {
+                return errorResponse(
+                    res,
+                    `Product remaining ${product.quantity}!`
+                );
+            }
 
             if (!product) {
                 return errorResponse(res, "Product not found!");
@@ -88,7 +100,8 @@ class Controller {
                                 name: product.name,
                                 quantity,
                                 base_price_money: {
-                                    amount: product.price,
+                                    amount:
+                                        product.price * 100,
                                     currency: seller.currency,
                                 },
                                 note: `Order for ${product.name}`,
@@ -102,10 +115,10 @@ class Controller {
 
                 const charge = await square.post("/payments", {
                     idempotency_key: randomUUID(),
-                    source_id: customer.card_token,
+                    source_id: customer.card.id,
                     order_id,
                     amount_money: {
-                        amount: product.price,
+                        amount: product.price * Number(quantity) * 100,
                         currency: seller.currency,
                     },
                     customer_details: {
@@ -123,9 +136,19 @@ class Controller {
                 throw new Error(error);
             }
 
+            product.quantity--;
             await product.save();
 
-            sendResponse(res, 200, true, "Product sold successfully", product);
+            const trans = Transaction.create({
+                info: "",
+                customer: customer._id,
+                user: seller._id,
+                item: product._id,
+                amount: product.price * Number(quantity),
+                type: "PAID",
+            });
+
+            sendResponse(res, 200, true, "Product purchased successfully!", trans);
         } catch (error) {
             console.log(error);
             errorResponse(res);

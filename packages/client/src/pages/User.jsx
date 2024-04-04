@@ -45,7 +45,7 @@ const User = () => {
 
     return (
         <div className="h-full bg-white">
-            <div className="text-center bg-[grey] h-full w-full">
+            <div className="text-center bg-[white] h-full w-full">
                 <div className="text-center flex items-center justify-center flex-col">
                     <Avatar
                         alt={user.name}
@@ -58,7 +58,7 @@ const User = () => {
                     <h1 className="[font-family:'poppins'] p-2">{user.name}</h1>
                     <br />
                     <Textarea
-                        className="h-[80px] !p-[5px] !rounded-[5px]"
+                        className="h-[80px] !p-[5px] !rounded-[5px] !border-black !border"
                         placeholder="Billing Address"
                         value={user.billingAddress}
                         onChange={(e) => {
@@ -70,7 +70,7 @@ const User = () => {
                     />
                     <br />
                     <Textarea
-                        className="h-[80px] !p-[5px] !rounded-[5px]"
+                        className="h-[80px] !p-[5px] !rounded-[5px] !border-black !border"
                         placeholder="Shipping Address"
                         value={user.shippingAddress}
                         onChange={(e) => {

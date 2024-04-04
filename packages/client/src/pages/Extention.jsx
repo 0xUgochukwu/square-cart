@@ -47,7 +47,7 @@ const Extention = () => {
                         <>{tabs[value]}</>
                     )}
                 </div>
-                <div className="w-fit text-center m-[auto]">
+                <div className="w-full bg-white text-center m-[auto]">
                     <Tabs
                         value={value}
                         onChange={handleChange}

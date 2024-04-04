@@ -13,6 +13,7 @@ const transactionSchema = new mongoose.Schema({
     user: {
         type: ObjectId,
         default: null,
+        ref: "User",
     },
     amount: {
         type: Number,
@@ -27,6 +28,7 @@ const transactionSchema = new mongoose.Schema({
         type: ObjectId,
         default: null,
         required: true,
+        ref: "Product",
     },
     createdAt: {
         type: Date,

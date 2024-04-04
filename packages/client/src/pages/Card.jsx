@@ -34,6 +34,9 @@ const Card = () => {
         console.log(cardInfo);
 
         if (cardInfo.success) {
+            if (!cardInfo.success.data) {
+                return setCard(false);
+            }
             if (Object.keys(cardInfo.success.data).length === 0) {
                 setCard(false);
             } else {
@@ -61,11 +64,22 @@ const Card = () => {
                                         "!bg-[#fe2c55] text-white !w-[150px]"
                                     }
                                     onClick={() => {
+                                        const user = JSON.parse(
+                                            localStorage.getItem("user")
+                                        );
+                                        if (!user.billingAddress) {
+                                            return toast.error(
+                                                "Add your billing address to continue!"
+                                            );
+                                        }
                                         setCardForm(true);
                                     }}
                                 >
                                     <AddCardIcon /> Add Card
                                 </Button>
+                                <p className="text-[10px] m-5 text-[grey]">
+                                    We will save your card for future payments!
+                                </p>
                             </h1>
                         ) : (
                             <CardForm
@@ -100,7 +114,9 @@ const Card = () => {
                     </div>
                 ) : (
                     <div className="h-full w-full flex justify-center items-center flex-col bg-[grey] p-1">
-                        <div className="w-[290px]">
+                        <div className="w-[290px]" onClick={() => {
+                            setCard(false);
+                        }}>
                             <Cards
                                 number={card.bin + "******" + card.last4}
                                 expiry={
@@ -118,7 +134,7 @@ const Card = () => {
                 )}
             </div>
             <div className="w-full h-[200px] bg-white">
-                <div className="p-2 [font-family:'montserrat'] h-[200px]">
+                <div className="p-2 pb-0 [font-family:'montserrat'] h-[200px]">
                     <p className="text-[grey]">History</p>
                     <Transaction />
                 </div>
