@@ -50,10 +50,12 @@ const io = socket(server, {
 
 extentionSocket(io);
 
-const PORT = process.env.PORT || 2020;
+const PORT = process.env.PORT || 5505;
+
+console.log(process.env.MONGODB);
 
 // Start the server
 server.listen(PORT, async () => {
     await connectToDatabase();
-    console.log("Server started on port 2020");
+    console.log("Server started on port 5500");
 });
