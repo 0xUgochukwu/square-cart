@@ -87,6 +87,8 @@ class Controller {
                 return errorResponse(res, "Add a Credit Card!");
             }
 
+            let order_id, payment_id;
+
             try {
                 const ref = randomUUID();
                 const order = await square.post("/orders", {
@@ -100,8 +102,7 @@ class Controller {
                                 name: product.name,
                                 quantity,
                                 base_price_money: {
-                                    amount:
-                                        product.price * 100,
+                                    amount: product.price * 100,
                                     currency: seller.currency,
                                 },
                                 note: `Order for ${product.name}`,
@@ -111,7 +112,7 @@ class Controller {
                 });
 
                 console.log(order.data);
-                const order_id = order.data.order.id;
+                order_id = order.data.order.id;
 
                 const charge = await square.post("/payments", {
                     idempotency_key: randomUUID(),
@@ -130,6 +131,8 @@ class Controller {
                     // verification_token: customer.card.verification_token,
                 });
 
+                payment_id = charge.data.payment.id;
+
                 console.log(charge.data);
             } catch (error) {
                 console.log(error.response.data);
@@ -146,11 +149,81 @@ class Controller {
                 item: product._id,
                 amount: product.price * Number(quantity),
                 type: "PAID",
+                payment_id,
+                order_id,
             });
 
-            sendResponse(res, 200, true, "Product purchased successfully!", trans);
+            sendResponse(
+                res,
+                200,
+                true,
+                "Product purchased successfully!",
+                trans
+            );
         } catch (error) {
             console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async refundItem(req, res) {
+        try {
+            const { id, reason } = req.body;
+            const tran = await Transaction.findOne({
+                _id: id,
+                type: "PAID",
+            })
+                .populate({
+                    path: "customer",
+                    select: "customer_id card_token",
+                })
+                .populate({
+                    path: "user",
+                    select: "currency",
+                })
+                .populate({
+                    path: "item",
+                    select: "quantity",
+                });
+
+            if (!tran) {
+                return errorResponse(res, "Transaction not found!");
+            }
+
+            console.log(tran.item);
+
+            const refund = await square.post("/refunds", {
+                idempotency_key: randomUUID(),
+                payment_id: tran.payment_id,
+                amount_money: {
+                    amount: tran.amount * 100,
+                    currency: tran.user.currency,
+                },
+                // destination_id: tran.customer.card_token,
+                // customer_id: tran.customer.customer_id,
+                // location_id: LID,
+                unlinked: false,
+                reason: `Refund for ${reason ? reason : "Unknown reason"}`,
+            });
+
+            console.log(refund.data);
+
+            await tran.updateOne({
+                type: "REFUND",
+            });
+
+            await Product.findOneAndUpdate(
+                {
+                    _id: tran.item._id,
+                },
+                {
+                    quantity: tran.item.quantity + 1,
+                }
+            );
+
+            sendResponse(res, 200, true, "Transaction refunded successfully!");
+        } catch (error) {
+            console.log(error.response.data);
             errorResponse(res);
         }
     }

@@ -21,4 +21,8 @@ router.get("/", auth("user"), (req, res) => {
     Controller.getItems(req, res);
 });
 
+router.post("/refund", auth("user"), (req, res) => {
+    Controller.refundItem(req, res);
+});
+
 module.exports = router;

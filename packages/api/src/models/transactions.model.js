@@ -6,9 +6,18 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    payment_id: {
+        type: String,
+        default: "",
+    },
+    order_id: {
+        type: String,
+        default: "",
+    },
     customer: {
         type: ObjectId,
         default: null,
+        ref: "Customer",
     },
     user: {
         type: ObjectId,
