@@ -4,21 +4,27 @@ import React, { useContext, useState } from "react";
 import Images from "./Images";
 import { Button } from "./Button";
 import { SpinnerSmall } from "./Spinner";
+import { AddToCartComponent } from "addtocart-react-component";
 import get from "../utils/Get";
 import appContext from "../contexts/context";
+import QuantityInput from "./QuantityInput";
 
 const ShopItem = ({ info, images }) => {
     const [buying, setBuying] = useState(false);
+    const [amount, setAmount] = useState(1);
     const { toast, socket } = useContext(appContext);
 
     const buyProduct = async (id) => {
         console.log(id);
         setBuying(true);
 
-        get.post("/product/buy/" + id)
+        get.post("/product/buy/" + id, {
+            quantity: amount,
+        })
             .then((res) => {
                 console.log(res);
                 setBuying(false);
+                toast.success(res.data.message);
             })
             .catch((err) => {
                 console.error(err);
@@ -42,8 +48,18 @@ const ShopItem = ({ info, images }) => {
             </div>
             <div className="h-fit w-full p-2 pt-0 bg-white flex justify-between items-center">
                 <p className="[font-family:'montserrat'] font-bold text-[20px] inline-block">
-                    ${info?.price || "350"}
+                    ${Number(info?.price) * amount}
                 </p>
+                <QuantityInput
+                    value={1}
+                    max={info?.quantity || 1}
+                    min={1}
+                    color="#fe2c55"
+                    onChange={(value) => {
+                        setAmount(value);
+                    }}
+                    className="p-3"
+                />
                 {buying ? (
                     <Button className="!w-[100px] !bg-[#fe2c55] text-white !m-0 text-center flex justify-center items-center">
                         <SpinnerSmall size="sm" />

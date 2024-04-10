@@ -6,13 +6,23 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    payment_id: {
+        type: String,
+        default: "",
+    },
+    order_id: {
+        type: String,
+        default: "",
+    },
     customer: {
         type: ObjectId,
         default: null,
+        ref: "Customer",
     },
     user: {
         type: ObjectId,
         default: null,
+        ref: "User",
     },
     amount: {
         type: Number,
@@ -27,6 +37,7 @@ const transactionSchema = new mongoose.Schema({
         type: ObjectId,
         default: null,
         required: true,
+        ref: "Product",
     },
     createdAt: {
         type: Date,

@@ -10,7 +10,7 @@ const User = require("../models/users.model");
 const Product = require("../models/products.model");
 const square = require("../services/square");
 const { randomUUID } = require("crypto");
-const Transaction = require("../models/customer.model");
+const Transaction = require("../models/transactions.model");
 
 class Controller {
     async checkEmail(req, res) {
@@ -160,29 +160,30 @@ class Controller {
             }
 
             try {
-                // const res = await square.post("/cards", {
-                //     idempotency_key: randomUUID(),
-                //     source_id: token,
-                //     verification_token: verify,
-                //     card: {
-                //         cardholder_name: user.name,
-                //         customer_id: user.customer_id,
-                //         exp_month: card.expMonth,
-                //         exp_year: card.expYear,
-                //         billing_address: {
-                //             address_line_1: user.billingAddress,
-                //         },
-                //     },
-                // });
+                const res = await square.post("/cards", {
+                    idempotency_key: randomUUID(),
+                    source_id: token,
+                    verification_token: verify,
+                    card: {
+                        cardholder_name: user.name,
+                        customer_id: user.customer_id,
+                        exp_month: card.expMonth,
+                        exp_year: card.expYear,
+                        billing_address: {
+                            address_line_1: user.billingAddress,
+                        },
+                    },
+                });
 
-                // console.log(res.data);
-                // card.bin = res.data.card.bin;
-                // card.fingerprint = res.data.card.fingerprint;
-                // card.card_type = res.data.card.card_type;
-                // card.prepaid_type = res.data.card.prepaid_type;
-                // card.created_at = res.data.card.created_at;
-                // card.cardholder_name = res.data.card.cardholder_name;
-                // card.verification_token = verify;
+                console.log(res.data);
+                card.id = res.data.card.id;
+                card.bin = res.data.card.bin;
+                card.fingerprint = res.data.card.fingerprint;
+                card.card_type = res.data.card.card_type;
+                card.prepaid_type = res.data.card.prepaid_type;
+                card.created_at = res.data.card.created_at;
+                card.cardholder_name = res.data.card.cardholder_name;
+                card.verification_token = verify;
             } catch (e) {
                 console.log(e.response.data);
                 throw new Error(e);
@@ -255,7 +256,15 @@ class Controller {
 
             const transactions = await Transaction.find({
                 customer: user._id,
-            });
+            })
+                .populate({
+                    path: "item",
+                    select: {
+                        name: 1,
+                        images: { $slice: ["$images", 1] },
+                    },
+                })
+                .sort({ createdAt: -1 });
 
             return successResponse(
                 res,
@@ -294,6 +303,7 @@ class Controller {
                         info: activeItem.info,
                         price: activeItem.price,
                         name: activeItem.name,
+                        quantity: activeItem.quantity,
                     },
                 };
             }
