@@ -37,3 +37,12 @@ export const setLocalStorage = (key: string, value: string) => {
 export const getLocalStorage = (key: string) => {
   return localStorage.getItem(key);
 };
+
+export const getCookieData = (dataType: string) => {
+  const data = getCookie("@user");
+  if (data) {
+    const { user, token } = JSON.parse(data);
+    return dataType === "user" ? user : token;
+  }
+  return null;
+};

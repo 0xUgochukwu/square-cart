@@ -29,7 +29,7 @@ const Login = () => {
   const handleFormSubmit = async () => {
     try {
       const data = await sendRequest("post", "auth/login", formData);
-      setCookie("@user", data.data, 1);
+      setCookie("@user", JSON.stringify(data.data), 1);
       toast("success", {
         description: data.message,
         action: {
@@ -37,7 +37,7 @@ const Login = () => {
           onClick: () => console.log("clear"),
         },
       });
-      navigate("/dashboard");
+      navigate("/dashboard/home");
     } catch (error: any) {
       console.error("Error occurred during registration:", error.message);
     }

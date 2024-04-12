@@ -1,6 +1,10 @@
+/** @format */
+
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Home from "../pages/dashboard/Home";
+import Shop from "../pages/dashboard/Shop";
+import ProtectedRoute from "./protectedroute";
 
 const Routes = [
   {
@@ -13,7 +17,17 @@ const Routes = [
   },
   {
     path: "/dashboard",
-    element: <Home />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/dashboard/home",
+        element: <Home />,
+      },
+      {
+        path: "/dashboard/shop",
+        element: <Shop />,
+      },
+    ],
   },
 ];
 
