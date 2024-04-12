@@ -57,5 +57,5 @@ console.log(process.env.MONGODB);
 // Start the server
 server.listen(PORT, async () => {
     await connectToDatabase();
-    console.log("Server started on port 5500");
+    console.log(`Server started on port ${PORT}`);
 });

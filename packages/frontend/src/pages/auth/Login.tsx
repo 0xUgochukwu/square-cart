@@ -1,15 +1,22 @@
 /** @format */
 
 import { useState } from "react";
-import Input from "../../components1/Input";
+import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Label } from "../../components/ui/label";
+import useAxiosRequest from "../../hooks/useAxiosRequest";
+import { toast } from "sonner";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { setCookie } from "../../services/storage";
 
 const Login = () => {
   const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const { loading, error, sendRequest } = useAxiosRequest<any>();
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const target = e.target as HTMLInputElement;
@@ -19,33 +26,79 @@ const Login = () => {
     });
   };
 
-  const handleFormSubmit = () => {};
+  const handleFormSubmit = async () => {
+    try {
+      const data = await sendRequest("post", "auth/login", formData);
+      setCookie("@user", data.data, 1);
+      toast("success", {
+        description: data.message,
+        action: {
+          label: "clear",
+          onClick: () => console.log("clear"),
+        },
+      });
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Error occurred during registration:", error.message);
+    }
+  };
   return (
     <div className='min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12'>
       <div className='p-10 xs:p-0 mx-auto md:w-full md:max-w-md'>
         <h1 className='font-bold text-center text-2xl mb-5'>Your Logo</h1>
         <div className='bg-white shadow w-full rounded-lg divide-y divide-gray-200'>
           <div className='px-5 py-7'>
-            <Input
-              label='E-mail'
-              name='email'
-              value={formData.email}
-              required
-              changeFunction={handleFormChange}
-            />
-            <Input
-              label='Password'
-              name='password'
-              value={formData.password}
-              required
-              changeFunction={handleFormChange}
-            />
-            <Button className="w-full">Login</Button>
+            <div className='grid w-full max-w-sm items-center gap-1.5 mt-5'>
+              <Label htmlFor='email'>Email</Label>
+              <Input
+                type='email'
+                id='email'
+                placeholder='Email'
+                name='email'
+                value={formData.email}
+                required
+                onChange={(e) => handleFormChange(e)}
+              />
+            </div>
+            <div className='grid w-full max-w-sm items-center gap-1.5 mt-5'>
+              <Label htmlFor='email'>Password</Label>
+              <Input
+                type='password'
+                id='password'
+                placeholder='Password'
+                name='password'
+                value={formData.password}
+                required
+                onChange={(e) => handleFormChange(e)}
+              />
+            </div>
+            <Button
+              className='w-full mt-5 mb-5'
+              onClick={handleFormSubmit}
+              disabled={loading}>
+              {loading ? (
+                <>
+                  <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                  Please wait
+                </>
+              ) : (
+                "Login"
+              )}
+            </Button>
+            {error && (
+              <Alert variant='destructive'>
+                <ExclamationTriangleIcon className='h-4 w-4' />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error?.message}</AlertDescription>
+              </Alert>
+            )}
           </div>
           <div className='py-5'>
             <div className='grid grid-cols-2 gap-1'>
               <div className='text-center sm:text-left whitespace-nowrap'>
-                <Link to={"/register"} className='transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset'>
+                <Link
+                  to={"/register"}
+                  className='transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
