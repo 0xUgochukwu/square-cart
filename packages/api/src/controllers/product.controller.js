@@ -37,7 +37,7 @@ class Controller {
     async getItems(req, res) {
         try {
             const products = await Product.find({
-                user_id: req.user.id,
+                user_id: req.user._id,
             });
 
             sendResponse(res, 200, true, products);
