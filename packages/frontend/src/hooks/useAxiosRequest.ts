@@ -8,6 +8,7 @@ interface AxiosHookResponse<T> {
   loading: boolean;
   error: string | null;
   sendRequest: (method: Method, url: string, data?: any) => Promise<T>;
+  token?: any;
 }
 
 const useAxiosRequest = <T>(): AxiosHookResponse<T> => {
@@ -17,26 +18,27 @@ const useAxiosRequest = <T>(): AxiosHookResponse<T> => {
   const sendRequest = async (
     method: Method,
     url: string,
-    data?: any
+    data?: any,
+    token?: any
   ): Promise<T> => {
     setLoading(true);
     setError(null);
-
+    
     try {
       let response;
-
+      console.log(token)
       switch (method.toLowerCase()) {
         case "get":
-          response = await axios.get<T>(`${api}/${url}`);
+          response = await axios.get<T>(`${api}/${url}`, token);
           break;
         case "post":
-          response = await axios.post<T>(`${api}/${url}`, data);
+          response = await axios.post<T>(`${api}/${url}`, data, token);
           break;
         case "patch":
-          response = await axios.patch<T>(`${api}/${url}`, data);
+          response = await axios.patch<T>(`${api}/${url}`, data, token);
           break;
         case "delete":
-          response = await axios.delete<T>(`${api}/${url}`);
+          response = await axios.delete<T>(`${api}/${url}`, token);
           break;
         default:
           throw new Error("Invalid HTTP method");

@@ -1,9 +1,43 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import BottomNav from "../../components/bottomnav";
+import Navbar from "../../components/navbar";
+import TopBar from "../../components/topbar";
+import { getCookieData } from "../../services/storage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";;
+
+const queryClient = new QueryClient();
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <div className='bg-slate-100 min-h-screen'>{children}</div>;
+
+  const [userData, setUserData] = useState<any>(null);
+  
+  useEffect(() => {
+    const data = getCookieData("user");
+    if (data) {
+      setUserData(data);
+    }
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div className='bg-slate-100 min-h-screen'>
+        <TopBar image={encodeURI(userData?.picture) || ""} />
+        <div className='md:px-10 px-5 grid md:grid-flow-col gap-4'>
+          <div className='col-span-2'>
+            <Navbar />
+          </div>
+          <div className="col-span-10">
+            {children}
+          </div>
+        </div>
+        <div className='fixed bottom-0 md:hidden visible w-full'>
+          <BottomNav />
+        </div>
+      </div>
+    </QueryClientProvider>
+  );
 };
 
 export default Layout;

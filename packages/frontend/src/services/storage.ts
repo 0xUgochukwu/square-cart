@@ -42,7 +42,13 @@ export const getCookieData = (dataType: string) => {
   const data = getCookie("@user");
   if (data) {
     const { user, token } = JSON.parse(data);
-    return dataType === "user" ? user : token;
+    return dataType === "user"
+      ? user
+      : {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
   }
   return null;
 };
