@@ -1,6 +1,4 @@
-/** @format */
-
-// storage.ts
+import { useNavigate } from "react-router-dom";
 
 export const setCookie = (name: string, value: string, days: number) => {
   const date = new Date();
@@ -52,3 +50,9 @@ export const getCookieData = (dataType: string) => {
   }
   return null;
 };
+
+export const Logout = () => {
+  clearCookie("@user");
+  const navigate = useNavigate();
+  navigate("/");
+}

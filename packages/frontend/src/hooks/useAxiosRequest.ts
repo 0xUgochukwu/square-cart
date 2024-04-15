@@ -7,8 +7,7 @@ import api from "../constants/api";
 interface AxiosHookResponse<T> {
   loading: boolean;
   error: string | null;
-  sendRequest: (method: Method, url: string, data?: any) => Promise<T>;
-  token?: any;
+  sendRequest: (method: Method, url: string, data?: any, token?: any) => Promise<T>;
 }
 
 const useAxiosRequest = <T>(): AxiosHookResponse<T> => {

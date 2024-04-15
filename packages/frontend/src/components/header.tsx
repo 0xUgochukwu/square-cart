@@ -2,10 +2,10 @@
 
 import { Card } from "./ui/card";
 
-const TopBar = ({ image }: { image: string }) => {
+const Header = ({ image }: { image: string }) => {
   return (
-    <div className='py-5 md:px-10 px-5'>
-      <Card className='bg-white text-blue-800 px-10 py-1 z-10 w-full rounded-lg'>
+    <div className='pb-5'>
+      <Card className='bg-white text-blue-800 px-10 py-1 z-10 w-full'>
         <div className='flex items-center justify-between py-2 text-5x1'>
           <div className='font-bold text-[#399CE5] text-xl'>
             Admin<span className='text-orange-600'>Panel</span>
@@ -23,4 +23,4 @@ const TopBar = ({ image }: { image: string }) => {
   );
 };
 
-export default TopBar;
+export default Header;

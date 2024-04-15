@@ -1,9 +1,7 @@
-/** @format */
-
 import React, { useEffect, useState } from "react";
 import BottomNav from "../../components/bottomnav";
 import Navbar from "../../components/navbar";
-import TopBar from "../../components/topbar";
+import Header from "../../components/header";
 import { getCookieData } from "../../services/storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";;
 
@@ -23,12 +21,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <div className='bg-slate-100 min-h-screen'>
-        <TopBar image={encodeURI(userData?.picture) || ""} />
-        <div className='md:px-10 px-5 grid md:grid-flow-col gap-4'>
-          <div className='col-span-2'>
+        <Header image={encodeURI(userData?.picture) || ""} />
+        <div className='grid grid-cols-1  sm:grid-cols-12 gap-4'>
+          <div className='hidden sm:block sm:col-span-2'>
             <Navbar />
           </div>
-          <div className="col-span-10">
+          <div className="sm:col-span-10">
             {children}
           </div>
         </div>

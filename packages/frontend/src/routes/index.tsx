@@ -6,6 +6,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Home from "../pages/dashboard/Home";
 import Shop from "../pages/dashboard/Shop";
+import Orders from "../pages/dashboard/Orders";
 import ProtectedRoute from "./protectedroute";
 
 const Routes = [
@@ -38,6 +39,10 @@ const Routes = [
       {
         path: "/dashboard/shop",
         element: <Shop />,
+      },
+      {
+        path: "/dashboard/orders",
+        element: <Orders />,
       },
     ],
   },

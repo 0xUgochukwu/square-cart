@@ -1,5 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { NavbarItems } from "../constants/navbarItems";
+import { LogOut } from "lucide-react";
+import { Logout } from "../services/storage";
 
 const NavbarItem = ({
   to,
@@ -16,7 +18,7 @@ const NavbarItem = ({
     className={`rounded-lg p-2 group hover:bg-orange-600 ${
       location === to && "bg-orange-600"
     } transition-all mb-2`}>
-    <Link
+    <NavLink
       to={to}
       className={`text-gray-600 w-full group-hover:text-white ${
         location === to && "text-white"
@@ -25,7 +27,7 @@ const NavbarItem = ({
         {icon}
         <span>{label}</span>
       </span>
-    </Link>
+    </NavLink>
   </div>
 );
 
@@ -38,6 +40,18 @@ const Navbar = () => {
         {NavbarItems.map((item, index) => (
           <NavbarItem key={index} {...item} location={location.pathname} />
         ))}
+        <div
+          className={`rounded-lg p-2 group hover:bg-orange-600 transition-all mb-2`}>
+          <NavLink
+            className={`text-gray-600 w-full group-hover:text-white`}
+            to={""}
+            onClick={Logout}>
+            <span className='flex justify-left items-center gap-2'>
+              <LogOut size={"18px"} />
+              <span>Logout</span>
+            </span>
+          </NavLink>
+        </div>
       </div>
     </div>
   );

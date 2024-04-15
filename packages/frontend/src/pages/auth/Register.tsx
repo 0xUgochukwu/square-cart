@@ -8,9 +8,10 @@ import { Link, useNavigate } from "react-router-dom";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { toast } from "sonner";
+import { useToast } from "../../components/ui/use-toast";
 import { setCookie } from "../../services/storage";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { ToastAction } from "../../components/ui/toast";
 
 const Register = () => {
   const [formData, setFormData] = useState<any>({
@@ -20,6 +21,7 @@ const Register = () => {
     tiktok: "",
   });
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { loading, error, sendRequest } = useAxiosRequest<any>();
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,12 +37,10 @@ const Register = () => {
       const data = await sendRequest("post", "auth/signup", formData);
 
       setCookie("@user", JSON.stringify(data.data), 1);
-      toast("success", {
+      toast({
+        title: "Success",
         description: data.message,
-        action: {
-          label: "clear",
-          onClick: () => console.log("clear"),
-        },
+        action: <ToastAction altText='done'>done</ToastAction>,
       });
       navigate("/dashboard/home");
     } catch (error: any) {

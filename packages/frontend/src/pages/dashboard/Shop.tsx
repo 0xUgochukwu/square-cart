@@ -7,7 +7,6 @@ import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -15,29 +14,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../../components/ui/sheet";
-import { Card } from "../../components/ui/card";
 import { Plus } from "lucide-react";
 import Upload from "../../components/upload";
-import { Payment, columns } from "../../utils/columns";
+import { columns } from "../../utils/columns";
 import { DataTable } from "../../components/ui/data-table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
 import { getCookieData } from "../../services/storage";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { toast } from "sonner";
-
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    // ...
-  ];
-}
+import { ToastAction } from "../../components/ui/toast";
+import { useToast } from "../../components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../../components/loading";
 
 const Shop = () => {
   const [token, setToken] = useState<string>("");
@@ -49,6 +37,8 @@ const Shop = () => {
     images: [],
   });
   const { loading, error, sendRequest } = useAxiosRequest<any>();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["products"],
@@ -60,6 +50,9 @@ const Shop = () => {
   const mutation = useMutation({
     mutationFn: (newProducts: any) => {
       return sendRequest("post", "product/add", newProducts, token);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
@@ -84,134 +77,125 @@ const Shop = () => {
 
   useEffect(() => {
     if (mutation.isError) {
-      toast("error", {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! we've got a problem.",
         description: error?.message,
-        action: {
-          label: "clear",
-          onClick: () => console.log("clear"),
-        },
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
       });
     }
     if (mutation.isSuccess) {
-      toast("success", {
+      toast({
+        title: "Success! All done.",
         description: "Product added successfully!",
-        action: {
-          label: "clear",
-          onClick: () => console.log("clear"),
-        },
+        action: <ToastAction altText='done'>done</ToastAction>,
       });
     }
-  }, [mutation.isError, error?.message, mutation.isSuccess]);
+  }, [mutation.isError, error?.message, mutation.isSuccess, data]);
 
   return (
-    <Card className='md:col-span-12 col-span-12 px-3'>
-      <div className='w-full'>
-        <div className='flex justify-end pt-4'>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant='outline' className='ml-auto'>
-                Add Product <Plus className='ml-2 h-4 w-4' />
-              </Button>
-            </SheetTrigger>
-            <SheetContent className=' overflow-y-scroll'>
-              <SheetHeader>
-                <SheetTitle>Add product</SheetTitle>
-                <SheetDescription>
-                  Add your product here. Click save when you're done.
-                </SheetDescription>
-              </SheetHeader>
-              <div className='grid gap-4 py-4'>
-                <div>
-                  <Label htmlFor='name' className='text-right'>
-                    Product Name
-                  </Label>
-                  <Input
-                    id='name'
-                    type='text'
-                    name='name'
-                    placeholder='Apple Iphone 12'
-                    className='mt-2'
-                    value={formData.name}
-                    required
-                    onChange={(e) => handleFormChange(e)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor='name' className='text-right'>
-                    Price
-                  </Label>
-                  <Input
-                    id='price'
-                    name='price'
-                    type='text'
-                    placeholder='1000'
-                    className='mt-2'
-                    value={formData.price}
-                    required
-                    onChange={(e) => handleFormChange(e)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor='name' className='text-right'>
-                    Quantity
-                  </Label>
-                  <Input
-                    id='quantity'
-                    name='quantity'
-                    type='number'
-                    placeholder='10'
-                    className='mt-2'
-                    value={formData.quantity}
-                    required
-                    onChange={(e) => handleFormChange(e)}
-                  />
-                </div>
-                <div className='grid w-full gap-1.5'>
-                  <Label htmlFor='message-2'>Product Info</Label>
-                  <Textarea
-                    placeholder='Type the product info here...'
-                    id='message-2'
-                    name='info'
-                    className='mt-2'
-                    value={formData.info}
-                    required
-                    onChange={(e) => handleFormChange(e)}
-                  />
-                </div>
-                <div className='grid w-full max-w-sm items-center gap-1.5'>
-                  <Label htmlFor='picture'>Product image</Label>
-                  <Upload updateFunction={setFormData} form={formData} />
-                </div>
+    <>
+      <div className='w-full flex justify-end pt-4 px-3'>
+        <p className=" text-xl">My Shop</p>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant='outline' className='ml-auto mb-5'>
+              Add Product <Plus className='ml-2 h-4 w-4' />
+            </Button>
+          </SheetTrigger>
+          <SheetContent className=' overflow-y-scroll'>
+            <SheetHeader>
+              <SheetTitle>Add product</SheetTitle>
+              <SheetDescription>
+                Add your product here. Click save when you're done.
+              </SheetDescription>
+            </SheetHeader>
+            <div className='grid gap-4 py-4'>
+              <div>
+                <Label htmlFor='name' className='text-right'>
+                  Product Name
+                </Label>
+                <Input
+                  id='name'
+                  type='text'
+                  name='name'
+                  placeholder='Apple Iphone 12'
+                  className='mt-2'
+                  value={formData.name}
+                  required
+                  onChange={(e) => handleFormChange(e)}
+                />
               </div>
-              <SheetFooter>
-                <Button onClick={handleFormSubmit} disabled={loading}>
-                  {loading ? (
-                    <>
-                      <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
-                      Saving
-                    </>
-                  ) : (
-                    "Save changes"
-                  )}
-                </Button>
-              </SheetFooter>
-            </SheetContent>
-          </Sheet>
-        </div>
-        <DataTable
-          columns={columns}
-          data={[
-            {
-              id: "728ed52f",
-              amount: 100,
-              image: "pending",
-              name: "m@example.com",
-            },
-            // ...
-          ]}
-        />
+              <div>
+                <Label htmlFor='name' className='text-right'>
+                  Price
+                </Label>
+                <Input
+                  id='price'
+                  name='price'
+                  type='text'
+                  placeholder='1000'
+                  className='mt-2'
+                  value={formData.price}
+                  required
+                  onChange={(e) => handleFormChange(e)}
+                />
+              </div>
+              <div>
+                <Label htmlFor='name' className='text-right'>
+                  Quantity
+                </Label>
+                <Input
+                  id='quantity'
+                  name='quantity'
+                  type='number'
+                  placeholder='10'
+                  className='mt-2'
+                  value={formData.quantity}
+                  required
+                  onChange={(e) => handleFormChange(e)}
+                />
+              </div>
+              <div className='grid w-full gap-1.5'>
+                <Label htmlFor='message-2'>Product Info</Label>
+                <Textarea
+                  placeholder='Type the product info here...'
+                  id='message-2'
+                  name='info'
+                  className='mt-2'
+                  value={formData.info}
+                  required
+                  onChange={(e) => handleFormChange(e)}
+                />
+              </div>
+              <div className='grid w-full max-w-sm items-center gap-1.5'>
+                <Label htmlFor='picture'>Product image</Label>
+                <Upload updateFunction={setFormData} form={formData} />
+              </div>
+            </div>
+            <SheetFooter>
+              <Button onClick={handleFormSubmit} disabled={loading}>
+                {loading ? (
+                  <>
+                    <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                    Saving
+                  </>
+                ) : (
+                  "Save changes"
+                )}
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       </div>
-    </Card>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className='w-full overflow-x-scroll bg-white p-4'>
+          <DataTable columns={columns} data={data.message} />
+        </div>
+      )}
+    </>
   );
 };
 

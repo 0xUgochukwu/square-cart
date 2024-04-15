@@ -5,16 +5,18 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../../components/ui/label";
+import { useToast } from "../../components/ui/use-toast";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
-import { toast } from "sonner";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { setCookie } from "../../services/storage";
+import { ToastAction } from "../../components/ui/toast";
 
 const Login = () => {
   const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
   });
+  const { toast } = useToast();
   const navigate = useNavigate();
   const { loading, error, sendRequest } = useAxiosRequest<any>();
 
@@ -30,13 +32,13 @@ const Login = () => {
     try {
       const data = await sendRequest("post", "auth/login", formData);
       setCookie("@user", JSON.stringify(data.data), 1);
-      toast("success", {
-        description: data.message,
-        action: {
-          label: "clear",
-          onClick: () => console.log("clear"),
-        },
-      });
+      toast({
+          title: "Success",
+          description: data.message,
+          action: (
+            <ToastAction altText="done">done</ToastAction>
+          ),
+        });
       navigate("/dashboard/home");
     } catch (error: any) {
       console.error("Error occurred during registration:", error.message);
