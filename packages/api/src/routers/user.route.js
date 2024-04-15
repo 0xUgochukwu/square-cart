@@ -12,4 +12,8 @@ router.get("/", (req, res) => {
     Controller.getUser(req, res);
 });
 
+router.post("/update", (req, res) => {
+    Controller.updateUser(req, res);
+});
+
 module.exports = router;

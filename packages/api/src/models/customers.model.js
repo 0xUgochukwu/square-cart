@@ -30,6 +30,10 @@ const customerSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    username: {
+        type: String,
+        default: "",
+    },
     address: {
         type: String,
         default: null,

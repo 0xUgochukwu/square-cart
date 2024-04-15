@@ -4,7 +4,10 @@ const { MONGODB_DB_NAME, MONGODB_URI } = process.env;
 
 async function connectToDatabase() {
     try {
-        await mongoose.connect(`${MONGODB_URI}/${MONGODB_DB_NAME}`, {});
+        await mongoose.connect(
+            `${MONGODB_URI}/${MONGODB_DB_NAME}?retryWrites=false`,
+            {}
+        );
         console.log("Connected to MongoDB");
         return mongoose.connection.db;
     } catch (err) {

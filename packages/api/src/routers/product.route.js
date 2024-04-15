@@ -10,7 +10,11 @@ router.post("/add", auth("user"), validate(addProductSchema), (req, res) => {
 });
 
 router.delete("/:productId", auth("user"), (req, res) => {
-    Controller.addItem(req, res);
+    Controller.deleteItem(req, res);
+});
+
+router.post("/:productId", auth("user"), (req, res) => {
+    Controller.updateItem(req, res);
 });
 
 router.post("/buy/:productId", auth("customer"), (req, res) => {
@@ -19,6 +23,22 @@ router.post("/buy/:productId", auth("customer"), (req, res) => {
 
 router.get("/", auth("user"), (req, res) => {
     Controller.getItems(req, res);
+});
+
+router.get("/active", auth("user"), (req, res) => {
+    Controller.getActiveItem(req, res);
+});
+
+router.post("/active/:productId", auth("user"), (req, res) => {
+    Controller.setActiveItem(req, res);
+});
+
+router.get("/watch", auth("user"), (req, res) => {
+    Controller.watchForPurchase(req, res);
+});
+
+router.get("/:productId", auth("user"), (req, res) => {
+    Controller.getItem(req, res);
 });
 
 router.post("/refund", auth("user"), (req, res) => {
