@@ -33,7 +33,7 @@ router.post("/active/:productId", auth("user"), (req, res) => {
     Controller.setActiveItem(req, res);
 });
 
-router.get("/watch", auth("user"), (req, res) => {
+router.get("/watch", (req, res) => {
     Controller.watchForPurchase(req, res);
 });
 
