@@ -12,6 +12,7 @@ const square = require("../services/square");
 const { randomUUID } = require("crypto");
 const Transaction = require("../models/transactions.model");
 const { LID } = process.env;
+const event = require("../helpers/event");
 
 class Controller {
     async addItem(req, res) {
@@ -28,6 +29,80 @@ class Controller {
                 "Product created successfully",
                 product
             );
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async getItem(req, res) {
+        try {
+            const itemId = req.params.productId;
+
+            const item = await Product.findOne({
+                _id: itemId,
+            });
+
+            if (!item) {
+                return sendResponse(res, 400, false, "Item not found!");
+            }
+
+            sendResponse(res, 200, true, "Fetched item successfully", item);
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async deleteItem(req, res) {
+        try {
+            const itemId = req.params.productId;
+
+            const item = await Product.findOne({
+                _id: itemId,
+            });
+
+            if (!item) {
+                return sendResponse(res, 400, false, "Item not found!");
+            }
+
+            await item.deleteOne();
+
+            sendResponse(res, 200, true, "Item deleted successfully", item);
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async updateItem(req, res) {
+        try {
+            const itemId = req.params.productId;
+
+            const item = await Product.findOne({
+                _id: itemId,
+            });
+
+            if (!item) {
+                return sendResponse(res, 400, false, "Item not found!");
+            }
+
+            item.name = req.body.name || item.name;
+            item.price = req.body.price || item.price;
+            item.quantity = req.body.quantity || item.quantity;
+            item.info = req.body.info || item.info;
+            item.images = req.body.images || item.images;
+            await item.save();
+
+            sendResponse(res, 200, true, "Item updated successfully");
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async updateItem(req, res) {
+        try {
         } catch (error) {
             console.log(error);
             errorResponse(res);
@@ -111,7 +186,7 @@ class Controller {
                     },
                 });
 
-                console.log(order.data);
+                // console.log(order.data);
                 order_id = order.data.order.id;
 
                 const charge = await square.post("/payments", {
@@ -133,7 +208,7 @@ class Controller {
 
                 payment_id = charge.data.payment.id;
 
-                console.log(charge.data);
+                // console.log(charge.data);
             } catch (error) {
                 console.log(error.response.data);
                 throw new Error(error);
@@ -142,7 +217,7 @@ class Controller {
             product.quantity--;
             await product.save();
 
-            const trans = Transaction.create({
+            const trans = await Transaction.create({
                 info: "",
                 customer: customer._id,
                 user: seller._id,
@@ -152,6 +227,37 @@ class Controller {
                 payment_id,
                 order_id,
             });
+
+            await trans.populate({
+                path: "item",
+                select: {
+                    name: 1,
+                    images: { $slice: ["$images", 1] },
+                },
+            });
+            await trans.populate({
+                path: "customer",
+                select: {
+                    name: 1,
+                    username: 1,
+                    picture: 1,
+                },
+            });
+
+            const data = {
+                customer: {
+                    name: trans.customer.name,
+                    picture: trans.customer.picture,
+                },
+                item: {
+                    name: trans.item.name,
+                    picture: trans.item.images[0] || "",
+                },
+                amount: product.price,
+                quantity,
+            };
+
+            event.emit(`sold-${seller._id.toString()}`, data);
 
             sendResponse(
                 res,
@@ -190,7 +296,7 @@ class Controller {
                 return errorResponse(res, "Transaction not found!");
             }
 
-            console.log(tran.item);
+            // console.log(tran.item);
 
             const refund = await square.post("/refunds", {
                 idempotency_key: randomUUID(),
@@ -206,7 +312,7 @@ class Controller {
                 reason: `Refund for ${reason ? reason : "Unknown reason"}`,
             });
 
-            console.log(refund.data);
+            // console.log(refund.data);
 
             await tran.updateOne({
                 type: "REFUND",
@@ -226,6 +332,105 @@ class Controller {
             console.log(error.response.data);
             errorResponse(res);
         }
+    }
+
+    async getActiveItem(req, res) {
+        try {
+            const user = await User.findOne({
+                _id: req.user._id,
+            });
+
+            if (!user) {
+                return errorResponse(res, "User not found!");
+            }
+
+            const activeItem = await Product.findOne({
+                _id: user.activeItem,
+            });
+
+            let item = {};
+
+            if (activeItem) {
+                item = {
+                    images: activeItem.images,
+                    info: {
+                        _id: activeItem._id.toString(),
+                        info: activeItem.info,
+                        price: activeItem.price,
+                        name: activeItem.name,
+                        quantity: activeItem.quantity,
+                    },
+                };
+            }
+
+            return successResponse(
+                res,
+                "Fetched Active Item Successfully!",
+                item
+            );
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async setActiveItem(req, res) {
+        try {
+            const itemId = req.params.productId;
+
+            const item = await Product.findOne({
+                _id: itemId,
+                user_id: req.body._id,
+            });
+
+            if (!item) {
+                return sendResponse(res, 400, false, "Item not found!");
+            }
+
+            await User.findByIdAndUpdate(req.body._id, {
+                activeItem: itemId,
+            });
+
+            sendResponse(
+                res,
+                200,
+                true,
+                "Updated active item successfully",
+                item
+            );
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async watchForPurchase(req, res) {
+        const emitter = event;
+
+        const populateDocument = async (insertedDocument) => {
+            console.log({ insertedDocument });
+            const populatedDocument = {
+                ...insertedDocument,
+            };
+            return populatedDocument;
+        };
+
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+
+        const listener = (data) => {
+            console.log({ data });
+            res.write(`data: ${JSON.stringify(data)}\n\n`);
+        };
+
+        // Listen for insert events and send data to client
+        emitter.on(`sold-${req.user._id}`, listener);
+
+        // Handle client disconnect
+        req.on("close", () => {
+            emitter.off(`sold-${req.user._id}`, listener);
+        });
     }
 }
 

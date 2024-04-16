@@ -7,7 +7,8 @@ const addProductSchema = Joi.object({
     quantity: Joi.number().optional(),
     images: Joi.array()
         .items(Joi.string().regex(/^data:image\/(png|jpeg|jpg);base64,/))
-        .optional(),
+        .optional()
+        .error(new Error("Image type is not supported!")),
 });
 
 module.exports = {
