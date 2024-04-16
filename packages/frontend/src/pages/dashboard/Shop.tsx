@@ -25,7 +25,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { ToastAction } from "../../components/ui/toast";
 import { useToast } from "../../components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import Loading from "../../components/loading";
+import TableSkeleton from "../../components/table-skeleton";
 
 const Shop = () => {
   const [token, setToken] = useState<string>("");
@@ -96,7 +96,7 @@ const Shop = () => {
   return (
     <>
       <div className='w-full flex justify-end pt-4 px-3'>
-        <p className=" text-xl">My Shop</p>
+        <p className=' text-xl'>My Shop</p>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant='outline' className='ml-auto mb-5'>
@@ -188,8 +188,9 @@ const Shop = () => {
           </SheetContent>
         </Sheet>
       </div>
+
       {isLoading ? (
-        <Loading />
+        <TableSkeleton />
       ) : (
         <div className='w-full overflow-x-scroll bg-white p-4'>
           <DataTable columns={columns} data={data.message} />

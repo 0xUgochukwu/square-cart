@@ -6,7 +6,8 @@ import { getCookieData } from "../../services/storage";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
-import moment from 'moment';
+import moment from "moment";
+import { Skeleton } from "../../components/ui/skeleton";
 
 function Home() {
   const [userData] = useState<any>(getCookieData("user"));
@@ -26,7 +27,9 @@ function Home() {
           <div>
             <p className='text-2xl text-indigo-900'>
               Welcome <br />
-              <strong>{userData?.name}</strong>
+              <strong>
+                {userData?.name || <Skeleton className='h-4 w-full' />}
+              </strong>
             </p>
             <span className='bg-black text-sm text-white inline-block rounded-full mt-12 px-8 py-2'>
               <strong>{moment().format("dddd Do MMMM, YYYY")}</strong>
@@ -39,10 +42,15 @@ function Home() {
           <div>
             <p className='text-2xl text-indigo-900'>
               My Store <br />
-              <strong>
-                {isLoading ? "fetching..." : data.message.length}
-              </strong>{" "}
-              items
+              {isLoading ? (
+                <>
+                  <Skeleton className='h-4 w-full' />
+                </>
+              ) : (
+                <>
+                  <strong>{data.message.length}</strong> items
+                </>
+              )}
             </p>
             <Link
               to='/dashboard/shop'

@@ -25,7 +25,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { ToastAction } from "../../components/ui/toast";
 import { useToast } from "../../components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import Loading from "../../components/loading";
+import Loading from "../../components/table-skeleton";
 
 const Orders = () => {
   const [token, setToken] = useState<string>("");
