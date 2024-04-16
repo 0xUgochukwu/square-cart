@@ -18,8 +18,14 @@ const ShopItem = ({ info, images }) => {
         console.log(id);
         setBuying(true);
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const user = JSON.parse(urlParams.get("user") || "{}");
+
+        console.log({ user });
+
         get.post("/product/buy/" + id, {
             quantity: amount,
+            user,
         })
             .then((res) => {
                 console.log(res);

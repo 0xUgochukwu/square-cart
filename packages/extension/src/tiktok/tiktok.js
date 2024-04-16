@@ -7,12 +7,34 @@ const getUsername = () => {
     return username;
 };
 
+const getUserInfo = () => {
+    const info = document.querySelector("#SIGI_STATE").innerText;
+    try {
+        const json = JSON.parse(info);
+        return json.AppContext.appContext.user;
+    } catch (error) {
+        return null;
+    }
+}
+
 const square_url = document.querySelector("#square_url").value;
 
 const username = getUsername();
 console.log(username);
 
-const url = `${square_url}src/tiktok/index.html?username=${username}`;
+let url = `${square_url}src/tiktok/index.html?username=${username}`;
+
+const info = getUserInfo();
+
+if(info){
+    const user = {
+        name: info.nickName,
+        username: info.uniqueId,
+        picture: info.avatarUri[0] || "",
+    }
+
+    url += `&user=${JSON.stringify(user)}`
+}
 
 const iframe = document.createElement("iframe");
 iframe.id = "square-iframe";
@@ -23,9 +45,13 @@ const openBtn = document.createElement("div");
 openBtn.id = "square-btn-open";
 openBtn.onclick = () => {
     if (iframe.style.display == "none") {
+        iframe.style.animation = "0.5s linear 0s 1 alternate fadeInRight"
         iframe.style.display = "block";
     } else {
-        iframe.style.display = "none";
+        iframe.style.animation = "0.5s linear 0s 1 alternate fadeOutRight"
+        setTimeout(() => {
+            iframe.style.display = "none";
+        }, 400);
     }
 };
 
