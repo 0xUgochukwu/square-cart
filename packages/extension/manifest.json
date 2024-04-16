@@ -12,7 +12,7 @@
     "content_scripts": [
         {
             "js": ["src/tiktok/inject.js"],
-            "matches": ["https://www.tiktok.com/*/live"],
+            "matches": ["https://www.tiktok.com/*"],
             "all_frames": true
         }
     ],
