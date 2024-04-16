@@ -1,6 +1,6 @@
 let api =
     document.location.hostname == "localhost"
-        ? "http://localhost:5500"
+        ? "http://localhost:2020"
         : "https://filesnap-r1x8.onrender.com";
 
 if (document.location.hostname.startsWith("172")) {

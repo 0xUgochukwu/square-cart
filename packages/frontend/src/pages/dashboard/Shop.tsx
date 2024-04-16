@@ -193,7 +193,7 @@ const Shop = () => {
         <TableSkeleton />
       ) : (
         <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.message} />
+          <DataTable columns={columns} data={data.message ? data.message : null} />
         </div>
       )}
     </>

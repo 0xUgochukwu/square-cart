@@ -1,5 +1,5 @@
 const express = require("express");
-const socket = require("socket.io");
+const socket = require("./services/socket-transactions");
 const cors = require("cors");
 const morgan = require("morgan");
 
@@ -9,13 +9,26 @@ const helmet = require("helmet");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
+const socketTransactions = require("./services/socket-transactions");
+// const transactionModel = require("./models/transactions.model");
 
 const loadenv = require("./configs/envs");
 loadenv();
 
-const extentionSocket = require("./services/socket");
+// const extentionSocket = require("./services/socket");
 
 const connectToDatabase = require("./services/db");
+// const pipeline = [
+//   {
+//     $match: {
+//       operationType: "insert",
+//     },
+//   },
+// ];
+// const changeStream = transactionModel.watch(pipeline);
+// changeStream.on("change", (change) => {
+//   console.log("Change detected:", change);
+// });
 const v1 = require("./routers/index.router");
 
 const limiter = rateLimit({
@@ -41,14 +54,15 @@ app.use(cors());
 app.use("/v1/api", v1);
 
 // Socket
-const io = socket(server, {
-    cors: {
-        origin: "*", // Replace with your client's domain
-        methods: ["GET", "POST"],
-    },
-});
+// const io = socket(server, {
+//     cors: {
+//         origin: "*", // Replace with your client's domain
+//         methods: ["GET", "POST"],
+//     },
+// });
 
-extentionSocket(io);
+// socketTransactions(io);
+socket.initSocket(server);
 
 const PORT = process.env.PORT || 5505;
 
