@@ -7,6 +7,7 @@ const {
 const { genHash, compareHash, genAccessToken } = require("../helpers");
 const User = require("../models/users.model");
 const Product = require("../models/products.model");
+const Transaction = require("../models/transactions.model");
 
 class Controller {
     async getUser(req, res) {
@@ -47,6 +48,31 @@ class Controller {
 
             await user.save();
             return successResponse(res, "Updated User Successfully!", user);
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async getTransactions(req, res) {
+        try {
+            const transactions = await Transaction.find({
+                user: req.user._id,
+            })
+                .populate({
+                    path: "item",
+                    select: {
+                        name: 1,
+                        images: { $slice: ["$images", 1] },
+                    },
+                })
+                .sort({ createdAt: -1 });
+
+            return successResponse(
+                res,
+                "Fetched Transactions Successfully!",
+                transactions
+            );
         } catch (error) {
             console.log(error);
             errorResponse(res);
