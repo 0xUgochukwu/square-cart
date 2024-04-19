@@ -2,7 +2,7 @@
 
 import { Card } from "./ui/card";
 import { Link } from "react-router-dom";
-import { NavbarItems } from "../constants/navbarItems";
+import { NavbarItems } from "../utils/navbar/navbarItems";
 import { LogOut } from "lucide-react";
 import { Logout } from "../services/storage";
 

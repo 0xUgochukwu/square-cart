@@ -1,6 +1,5 @@
 /** @format */
 import { useState, useEffect } from "react";
-
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
@@ -16,19 +15,18 @@ import {
 } from "../../components/ui/sheet";
 import { Plus } from "lucide-react";
 import Upload from "../../components/upload";
-import { columns } from "../../utils/columns";
+import { columns } from "../../utils/table/columns";
 import { DataTable } from "../../components/ui/data-table";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import useAxiosRequest from "../../hooks/useAxiosRequest";
-import { getCookieData } from "../../services/storage";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ToastAction } from "../../components/ui/toast";
 import { useToast } from "../../components/ui/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import TableSkeleton from "../../components/table-skeleton";
+import Query from "../../api/query";
+import Mutation from "../../api/mutation";
 
 const Shop = () => {
-  const [token, setToken] = useState<string>("");
+  const { toast } = useToast();
+  const [product, setProduct] = useState<any>([]);
   const [formData, setFormData] = useState<any>({
     name: "",
     price: "",
@@ -36,25 +34,19 @@ const Shop = () => {
     info: "",
     images: [],
   });
-  const { loading, error, sendRequest } = useAxiosRequest<any>();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => {
-      return sendRequest("get", "product/", null, token);
+  const queryParamsArray = [
+    {
+      id: "products",
+      url: "product/",
     },
-  });
-
-  const mutation = useMutation({
-    mutationFn: (newProducts: any) => {
-      return sendRequest("post", "product/add", newProducts, token);
+    {
+      id: "active_product",
+      url: "product/active",
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-  });
+  ];
+  const { queries, handleDataUpdate } = Query(queryParamsArray);
+  const { mutation } = Mutation();
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const target = e.target as HTMLInputElement;
@@ -65,33 +57,43 @@ const Shop = () => {
   };
 
   const handleFormSubmit = () => {
-    mutation.mutate(formData);
+    const data = {method: "post", url: "product/add", content: formData};
+    mutation.mutate(data);
   };
-
-  useEffect(() => {
-    const tokenData = getCookieData("token");
-    if (tokenData) {
-      setToken(tokenData);
-    }
-  }, []);
 
   useEffect(() => {
     if (mutation.isError) {
       toast({
         variant: "destructive",
         title: "Uh oh! we've got a problem.",
-        description: error?.message,
+        description: mutation.error?.response?.data?.message,
         action: <ToastAction altText='Try again'>Try again</ToastAction>,
       });
     }
     if (mutation.isSuccess) {
+      handleDataUpdate();
       toast({
         title: "Success! All done.",
         description: "Product added successfully!",
         action: <ToastAction altText='done'>done</ToastAction>,
       });
     }
-  }, [mutation.isError, error?.message, mutation.isSuccess, data]);
+  }, [mutation.isError, mutation.isSuccess]);
+
+  useEffect(() => {
+    if (queries[0].data && queries[1].data) {
+      if (queries[0]?.data?.message) {
+        const combinedData = queries[0].data.message.map((item: any) => {
+          if (item._id === queries[1].data.data.info?._id) {
+            return { ...item, active: true };
+          } else {
+            return { ...item, active: false };
+          }
+        });
+        setProduct(combinedData);
+      }
+    }
+  }, [queries[0].data, queries[1].data]);
 
   return (
     <>
@@ -174,8 +176,8 @@ const Shop = () => {
               </div>
             </div>
             <SheetFooter>
-              <Button onClick={handleFormSubmit} disabled={loading}>
-                {loading ? (
+              <Button onClick={handleFormSubmit} disabled={mutation.isPending}>
+                {mutation.isPending ? (
                   <>
                     <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
                     Saving
@@ -189,11 +191,15 @@ const Shop = () => {
         </Sheet>
       </div>
 
-      {isLoading ? (
+      {queries[0].isLoading || queries[1].isLoading ? (
         <TableSkeleton />
       ) : (
         <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.message ? data.message : null} />
+          <DataTable
+            columns={columns}
+            data={product}
+            onDataUpdate={handleDataUpdate}
+          />
         </div>
       )}
     </>

@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, LogOut, ShoppingBag, Store, UserRoundCog } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Store, UserRoundCog } from "lucide-react";
 
 export const NavbarItems = [
   {
