@@ -5,7 +5,10 @@ function validate(schema) {
     return (req, res, next) => {
         const { error, value } = schema.validate(req.body);
         if (error) {
-            return badResponse(res, error.details[0].message);
+            return badResponse(
+                res,
+                error.message || error?.details[0]?.message
+            );
         }
         req.body = value;
         next();
