@@ -16,7 +16,7 @@ import {
 } from "../../components/ui/sheet";
 import { Plus } from "lucide-react";
 import Upload from "../../components/upload";
-import { columns } from "../../utils/columns";
+import { columns } from "../../utils/table/columns";
 import { DataTable } from "../../components/ui/data-table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";

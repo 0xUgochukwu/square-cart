@@ -3,7 +3,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "../components/ui/button";
+import { Button } from "../../components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<any>[] = [
@@ -55,6 +55,6 @@ export const columns: ColumnDef<any>[] = [
     id: "action",
     accessorKey: "_id",
     header: "Actions",
-    enableHiding: false
+    enableHiding: false,
   },
 ];

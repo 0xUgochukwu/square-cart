@@ -15,11 +15,15 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 const Upload = ({
   form,
   updateFunction,
+  initialImage,
 }: {
   form: any;
   updateFunction: (value: any) => void;
+  initialImage?: string[];
 }) => {
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<string[]>(
+    initialImage ? initialImage : []
+  );
 
   const handleUpdateFiles = (fileItems: FilePondFile[]) => {
     const base64Files: string[] = fileItems.map((fileItem) => {
@@ -39,16 +43,16 @@ const Upload = ({
   };
 
   useEffect(() => {
-    console.log(files);
     updateFunction({
       ...form,
-      images: files,
+      images: files.map((file) => file.file),
     });
   }, [files]);
 
   return (
     <div className='App'>
       <FilePond
+        files={files}
         onupdatefiles={handleUpdateFiles}
         allowMultiple={true}
         maxFiles={3}

@@ -39,8 +39,6 @@ import {
 } from "./dropdown-menu";
 import { Input } from "./input";
 import { Checkbox } from "./checkbox";
-import { useMutation } from "@tanstack/react-query";
-import useAxiosRequest from "../../hooks/useAxiosRequest";
 import {
   Dialog,
   DialogContent,
@@ -54,18 +52,17 @@ import {
 import { NavLink } from "react-router-dom";
 import { useToast } from "./use-toast";
 import { ToastAction } from "./toast";
+import Mutation from "../../api/mutation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  token: any;
   onDataUpdate: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  token,
   onDataUpdate,
 }: DataTableProps<TData, TValue>) {
   const { toast } = useToast();
@@ -75,8 +72,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState<{ [key: number]: boolean }>(
     {}
   );
-
-  const { sendRequest } = useAxiosRequest<any>();
+  const { mutation } = Mutation();
 
   useEffect(() => {
     const initialRowSelection: { [key: number]: boolean } = {};
@@ -90,21 +86,14 @@ export function DataTable<TData, TValue>({
 
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => {
-      return sendRequest("delete", `product/${id}`, null, token);
-    },
-  });
-
-  const updateActiveMutation = useMutation({
-    mutationFn: (id: string) => {
-      return sendRequest("post", `product/active/${id}`, null, token);
-    },
-  });
-
   const handleDelete = async (id: string) => {
     try {
-      const deleteItem = await deleteMutation.mutateAsync(id);
+      const data = {
+        method: "delete",
+        url: `product/${id}`,
+        content: null,
+      };
+      const deleteItem = await mutation.mutateAsync(data);
       console.log(deleteItem);
       onDataUpdate();
       toast({
@@ -122,11 +111,13 @@ export function DataTable<TData, TValue>({
     newRowSelection[index] = !rowSelection[index];
     setRowSelection(newRowSelection);
     if (newRowSelection[index]) {
-      updateActiveMutation.mutate(item._id);
       try {
-        const updateActiveItem = await updateActiveMutation.mutateAsync(
-          item._id
-        );
+        const data = {
+          method: "post",
+          url: `product/active/${item._id}`,
+          content: null,
+        };
+        const updateActiveItem = await mutation.mutateAsync(data);
         console.log(updateActiveItem);
         onDataUpdate();
         toast({
