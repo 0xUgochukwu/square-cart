@@ -25,7 +25,6 @@ const useAxiosRequest = <T>(): AxiosHookResponse<T> => {
     
     try {
       let response;
-      console.log(token)
       switch (method.toLowerCase()) {
         case "get":
           response = await axios.get<T>(`${api}/${url}`, token);

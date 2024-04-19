@@ -36,7 +36,7 @@ const Orders = () => {
     info: "",
     images: [],
   });
-  const { loading, error, sendRequest } = useAxiosRequest<any>();
+  const { error, sendRequest } = useAxiosRequest<any>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

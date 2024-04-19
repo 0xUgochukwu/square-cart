@@ -21,6 +21,7 @@ const Socket = () => {
 
       socket.on(`sold-${data._id.toString()}`, (newTransaction) => {
         console.log("New transaction received:", newTransaction);
+        setTransaction(newTransaction);
         toast({
           title: "WooHoo!!!",
           description: `${newTransaction.transaction.customer.name} just bought ${newTransaction.transaction.item.name}`,

@@ -18,7 +18,7 @@ import { Plus } from "lucide-react";
 import Upload from "../../components/upload";
 import { columns } from "../../utils/columns";
 import { DataTable } from "../../components/ui/data-table";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
 import { getCookieData } from "../../services/storage";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -29,6 +29,7 @@ import TableSkeleton from "../../components/table-skeleton";
 
 const Shop = () => {
   const [token, setToken] = useState<string>("");
+  const [product, setProduct] = useState<any>([]);
   const [formData, setFormData] = useState<any>({
     name: "",
     price: "",
@@ -40,11 +41,24 @@ const Shop = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => {
-      return sendRequest("get", "product/", null, token);
+  const queryParamsArray = [
+    {
+      id: "products",
+      url: "product/",
     },
+    {
+      id: "active_product",
+      url: "product/active",
+    },
+  ];
+
+  const productQueries = useQueries({
+    queries: queryParamsArray.map((user) => {
+      return {
+        queryKey: [user.id],
+        queryFn: () => sendRequest("get", user.url, null, token)
+      };
+    }),
   });
 
   const mutation = useMutation({
@@ -66,6 +80,10 @@ const Shop = () => {
 
   const handleFormSubmit = () => {
     mutation.mutate(formData);
+  };
+
+  const handleDataUpdate = () => {
+    productQueries[0].refetch();
   };
 
   useEffect(() => {
@@ -91,7 +109,22 @@ const Shop = () => {
         action: <ToastAction altText='done'>done</ToastAction>,
       });
     }
-  }, [mutation.isError, error?.message, mutation.isSuccess, data]);
+  }, [mutation.isError, error?.message, mutation.isSuccess]);
+
+  useEffect(() => {
+    if (productQueries[0].data && productQueries[1].data) {
+      if (productQueries[0]?.data?.message) {
+        const combinedData = productQueries[0].data.message.map((item: any) => {
+          if (item._id === productQueries[1].data.data.info?._id) {
+            return { ...item, active: true };
+          } else {
+            return { ...item, active: false };
+          }
+        });
+        setProduct(combinedData);
+      }
+    }
+  }, [productQueries[0].data, productQueries[1].data]);
 
   return (
     <>
@@ -189,11 +222,16 @@ const Shop = () => {
         </Sheet>
       </div>
 
-      {isLoading ? (
+      {productQueries[0].isLoading || productQueries[1].isLoading ? (
         <TableSkeleton />
       ) : (
         <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.message ? data.message : null} />
+          <DataTable
+            columns={columns}
+            data={product}
+            token={token}
+            onDataUpdate={handleDataUpdate}
+          />
         </div>
       )}
     </>

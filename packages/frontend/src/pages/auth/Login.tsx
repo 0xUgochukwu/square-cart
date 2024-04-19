@@ -7,9 +7,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../../components/ui/label";
 import { useToast } from "../../components/ui/use-toast";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon, ReloadIcon } from "@radix-ui/react-icons";
 import { setCookie } from "../../services/storage";
 import { ToastAction } from "../../components/ui/toast";
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 
 const Login = () => {
   const [formData, setFormData] = useState<any>({
