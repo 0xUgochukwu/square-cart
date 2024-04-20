@@ -30,10 +30,13 @@ if(info){
     const user = {
         name: info.nickName,
         username: info.uniqueId,
-        picture: info.avatarUri[0] || "",
+        picture: decodeURIComponent(info.avatarUri[0] || ""),
     }
 
-    url += `&user=${JSON.stringify(user)}`
+    url += `&user=${btoa(encodeURIComponent(JSON.stringify(user)))}`
+    // url += `&user=${JSON.stringify(user)}`
+    console.log({url})
+    localStorage.setItem("user", JSON.stringify(user))
 }
 
 const iframe = document.createElement("iframe");

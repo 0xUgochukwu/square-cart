@@ -18,8 +18,17 @@ const ShopItem = ({ info, images }) => {
         console.log(id);
         setBuying(true);
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const user = JSON.parse(urlParams.get("user") || "{}");
+        let user;
+
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            user = JSON.parse(
+                decodeURIComponent(atob(urlParams.get("user"))) || "{}"
+            );
+        } catch (error) {
+            user = {};
+            console.log({ error });
+        }
 
         console.log({ user });
 

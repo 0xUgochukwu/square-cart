@@ -392,15 +392,20 @@ class Controller {
 
             const item = await Product.findOne({
                 _id: itemId,
-                user_id: req.body._id,
+                user_id: req.user._id,
             });
 
             if (!item) {
                 return sendResponse(res, 400, false, "Item not found!");
             }
 
-            await User.findByIdAndUpdate(req.body._id, {
+            await User.findByIdAndUpdate(req.user._id, {
                 activeItem: itemId,
+            });
+
+            const io = getIo();
+            io.emit(`item-${req.user.tiktok}`, {
+                message: "Active Item Changed",
             });
 
             sendResponse(

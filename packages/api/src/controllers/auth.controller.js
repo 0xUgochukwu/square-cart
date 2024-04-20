@@ -32,7 +32,7 @@ class AuthController {
     async signUp(req, res) {
         console.log(req.body);
         try {
-            let { email, name, password, tiktok } = req.body;
+            let { email, name, username, password, tiktok } = req.body;
 
             // Check if your with email already exists
             const userWithEmail = await User.findOne({
@@ -62,6 +62,7 @@ class AuthController {
                 _id: user._id.toString(),
                 email,
                 name,
+                tiktok,
                 type: "user",
             });
 
@@ -96,6 +97,7 @@ class AuthController {
                 const token = genAccessToken({
                     _id: user._id.toString(),
                     name: user.name,
+                    tiktok: user.tiktok,
                     email: user.email,
                     type: "user",
                 });

@@ -15,6 +15,11 @@ const Shop = ({ socket }) => {
         console.log("Connected to server", socket.id);
     });
 
+    socket.on(`item-${params.id}`, () => {
+        setProduct(null);
+        getProduct();
+    });
+
     socket.on("product", (item) => {
         setProduct(null);
         setTimeout(() => {
@@ -44,7 +49,7 @@ const Shop = ({ socket }) => {
 
     return (
         <div className="bg-[grey] h-full w-full">
-            {product.info ? (
+            {product?.info ? (
                 <ShopItem images={product.images} info={product.info} />
             ) : (
                 <div className="h-full w-full flex justify-center items-center flex-col bg-[ghostwhite]">
