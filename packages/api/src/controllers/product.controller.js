@@ -104,14 +104,6 @@ class Controller {
         }
     }
 
-    async updateItem(req, res) {
-        try {
-        } catch (error) {
-            console.log(error);
-            errorResponse(res);
-        }
-    }
-
     async getItems(req, res) {
         try {
             const products = await Product.find({
