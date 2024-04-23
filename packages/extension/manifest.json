@@ -5,9 +5,7 @@
     "icons": {
         "128": "assets/f.png"
     },
-    "action": {
-        "default_popup": "index.html"
-    },
+    "action": {},
     "permissions": ["activeTab", "storage", "scripting", "background"],
     "content_scripts": [
         {
