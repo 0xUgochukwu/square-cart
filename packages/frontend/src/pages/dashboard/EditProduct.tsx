@@ -142,7 +142,6 @@ const EditProduct = () => {
                 <Upload
                   updateFunction={setFormData}
                   form={formData}
-                  initialImage={formData.images}
                 />
               </div>
               <div>
