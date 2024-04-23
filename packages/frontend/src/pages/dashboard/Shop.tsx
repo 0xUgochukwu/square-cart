@@ -57,8 +57,15 @@ const Shop = () => {
   };
 
   const handleFormSubmit = () => {
-    const data = {method: "post", url: "product/add", content: formData};
+    const data = { method: "post", url: "product/add", content: formData };
     mutation.mutate(data);
+    setFormData({
+      name: "",
+      price: "",
+      quantity: "",
+      category: "",
+      image: [],
+    });
   };
 
   useEffect(() => {
