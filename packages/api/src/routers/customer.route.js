@@ -38,7 +38,7 @@ router.get("/transactions", auth(), (req, res) => {
     Controller.getTransactions(req, res);
 });
 
-router.get("/item", auth(), (req, res) => {
+router.get("/item", (req, res) => {
     Controller.getActiveItem(req, res);
 });
 

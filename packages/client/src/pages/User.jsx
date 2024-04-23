@@ -6,9 +6,11 @@ import { Input, Textarea } from "../components/Input";
 import { Button } from "../components/Button";
 import get from "../utils/Get";
 import appContext from "../contexts/context";
+import { useParams } from "react-router-dom";
 
 const User = () => {
     const { toast } = useContext(appContext);
+    const params = useParams();
 
     const user = JSON.parse(localStorage.getItem("user"));
     const [form, setForm] = useState({});
@@ -82,9 +84,7 @@ const User = () => {
                     />
                     <br />
                     <Button
-                        className={
-                            "border-transparent !mt-1 !bg-[#fe2c55] text-white !m-0"
-                        }
+                        className={`border-transparent !mt-1 bg-${params.type} text-white !m-0`}
                         onClick={updateAddress}
                     >
                         Save

@@ -8,8 +8,10 @@ import { AddToCartComponent } from "addtocart-react-component";
 import get from "../utils/Get";
 import appContext from "../contexts/context";
 import QuantityInput from "./QuantityInput";
+import { useParams } from "react-router-dom";
 
 const ShopItem = ({ info, images }) => {
+    const params = useParams();
     const [buying, setBuying] = useState(false);
     const [amount, setAmount] = useState(1);
     const { toast, socket } = useContext(appContext);
@@ -29,6 +31,8 @@ const ShopItem = ({ info, images }) => {
             user = {};
             console.log({ error });
         }
+
+        user.platform = params.type;
 
         console.log({ user });
 
@@ -69,7 +73,7 @@ const ShopItem = ({ info, images }) => {
                     value={1}
                     max={info?.quantity || 1}
                     min={1}
-                    color="#fe2c55"
+                    color={params.type}
                     onChange={(value) => {
                         setAmount(value);
                     }}
@@ -81,7 +85,7 @@ const ShopItem = ({ info, images }) => {
                     </Button>
                 ) : (
                     <Button
-                        className={"!w-[100px] !bg-[#fe2c55] text-white !m-0"}
+                        className={`!w-[100px] bg-${params.type} text-white !m-0`}
                         text="Buy"
                         onClick={() => {
                             buyProduct(info._id);

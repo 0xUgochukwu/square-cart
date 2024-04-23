@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const validate = require("../middlewares/validator.middleware");
 const Controller = require("../controllers/product.controller");
-const { addProductSchema } = require("../validators/product.validator");
+const {
+    addProductSchema,
+    addYoutubeID,
+} = require("../validators/product.validator");
 const auth = require("../middlewares/auth.middleware");
 
 router.post("/add", auth("user"), validate(addProductSchema), (req, res) => {
@@ -44,5 +47,14 @@ router.get("/:productId", auth("user"), (req, res) => {
 router.post("/refund", auth("user"), (req, res) => {
     Controller.refundItem(req, res);
 });
+
+router.post(
+    "/youtube/:productId",
+    auth("user"),
+    validate(addYoutubeID),
+    (req, res) => {
+        Controller.setYoutubeID(req, res);
+    }
+);
 
 module.exports = router;

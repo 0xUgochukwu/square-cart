@@ -278,41 +278,66 @@ class Controller {
     }
 
     async getActiveItem(req, res) {
+        const username = req.query.username;
+        const youtube_id = req.query.youtube_id;
+
         try {
-            const { username } = req.query;
+            if (username) {
+                const user = await User.findOne({
+                    tiktok: username,
+                });
 
-            const user = await User.findOne({
-                tiktok: username,
-            });
+                if (!user) {
+                    return errorResponse(res, "User not found!");
+                }
 
-            if (!user) {
-                return errorResponse(res, "User not found!");
+                const activeItem = await Product.findOne({
+                    _id: user.activeItem,
+                });
+
+                let item = {};
+
+                if (activeItem) {
+                    item = {
+                        images: activeItem.images,
+                        info: {
+                            _id: activeItem._id.toString(),
+                            info: activeItem.info,
+                            price: activeItem.price,
+                            name: activeItem.name,
+                            quantity: activeItem.quantity,
+                        },
+                    };
+                }
+
+                return successResponse(
+                    res,
+                    "Fetched Active Item Successfully!",
+                    item
+                );
+            } else if (youtube_id) {
+                const findItem = await Product.findOne({
+                    youtube_id,
+                });
+
+                let item = {};
+
+                if (findItem) {
+                    item = {
+                        images: findItem.images,
+                        info: {
+                            _id: findItem._id.toString(),
+                            info: findItem.info,
+                            price: findItem.price,
+                            name: findItem.name,
+                            quantity: findItem.quantity,
+                            youtube_duration: findItem.youtube_duration,
+                        },
+                    };
+                }
+
+                return successResponse(res, "Fetched Item Successfully!", item);
             }
-
-            const activeItem = await Product.findOne({
-                _id: user.activeItem,
-            });
-
-            let item = {};
-
-            if (activeItem) {
-                item = {
-                    images: activeItem.images,
-                    info: {
-                        _id: activeItem._id.toString(),
-                        info: activeItem.info,
-                        price: activeItem.price,
-                        name: activeItem.name,
-                        quantity: activeItem.quantity,
-                    },
-                };
-            }
-
-            return successResponse(
-                res,
-                "Fetched Active Item Successfully!",
-                item
-            );
         } catch (error) {
             console.log(error);
             errorResponse(res);

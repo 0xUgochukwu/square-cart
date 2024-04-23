@@ -11,6 +11,13 @@ const addProductSchema = Joi.object({
         .error(new Error("Image type is not supported!")),
 });
 
+const addYoutubeID = Joi.object({
+    youtube_id: Joi.string().min(5).max(15).required(),
+    start: Joi.number().min(0).required(),
+    end: Joi.number().min(0).required(),
+});
+
 module.exports = {
     addProductSchema,
+    addYoutubeID,
 };

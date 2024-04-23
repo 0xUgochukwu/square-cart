@@ -106,3 +106,13 @@ a:focus {
     height: -webkit-fill-available;
     height: stretch;
 }
+
+.bg-tiktok,
+.bg-\[tiktok\] {
+    background-color: #fe2c55 !important;
+}
+
+.bg-youtube,
+.bg-\[youtube\] {
+    background-color: #c00 !important;
+}

@@ -10,9 +10,11 @@ import useFetch from "../hooks/useFetch";
 import get from "../utils/Get";
 import appContext from "../contexts/context";
 import Transaction from "../components/Transaction";
+import { useParams } from "react-router-dom";
 
 const Card = () => {
     const { toast } = useContext(appContext);
+    const params = useParams();
 
     const [card, setCard] = useState(null);
     const [cardForm, setCardForm] = useState(null);
@@ -60,9 +62,7 @@ const Card = () => {
                         {!cardForm ? (
                             <h1 className="text-center text-[10px] text-[grey]">
                                 <Button
-                                    className={
-                                        "!bg-[#fe2c55] text-white !w-[150px]"
-                                    }
+                                    className={`bg-${params.type} text-white !w-[150px]`}
                                     onClick={() => {
                                         const user = JSON.parse(
                                             localStorage.getItem("user")
@@ -114,9 +114,12 @@ const Card = () => {
                     </div>
                 ) : (
                     <div className="h-full w-full flex justify-center items-center flex-col bg-[grey] p-1">
-                        <div className="w-[290px]" onClick={() => {
-                            setCard(false);
-                        }}>
+                        <div
+                            className="w-[290px]"
+                            onClick={() => {
+                                setCard(false);
+                            }}
+                        >
                             <Cards
                                 number={card.bin + "******" + card.last4}
                                 expiry={

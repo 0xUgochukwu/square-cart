@@ -16,6 +16,7 @@ const Transaction = require("../models/transactions.model");
 const { LID } = process.env;
 const event = require("../helpers/event");
 const { getIo } = require("../services/socket-transactions");
+const { platform } = require("os");
 
 class Controller {
     async addItem(req, res) {
@@ -245,6 +246,7 @@ class Controller {
                     name: tiktok_user?.name || trans.customer.name,
                     picture: tiktok_user?.picture || trans.customer.picture,
                     username: tiktok_user?.username,
+                    platform: tiktok_user?.platform,
                 },
                 item: {
                     name: trans.item.name,
@@ -372,6 +374,34 @@ class Controller {
                 "Fetched Active Item Successfully!",
                 item
             );
+        } catch (error) {
+            console.log(error);
+            errorResponse(res);
+        }
+    }
+
+    async setYoutubeID(req, res) {
+        try {
+            const itemId = req.params.productId;
+            const { youtube_id, start, end } = req.body;
+
+            const item = await Product.findOne({
+                _id: itemId,
+                user_id: req.user._id,
+            });
+
+            if (!item) {
+                return sendResponse(res, 400, false, "Item not found!");
+            }
+
+            item.youtube_id = youtube_id;
+            item.youtube_duration = {
+                start,
+                end,
+            };
+            await item.save();
+
+            sendResponse(res, 200, true, "YouTube Link Added");
         } catch (error) {
             console.log(error);
             errorResponse(res);

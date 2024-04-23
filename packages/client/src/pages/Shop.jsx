@@ -28,13 +28,23 @@ const Shop = ({ socket }) => {
     });
 
     const getProduct = () => {
-        get.get(`/customer/item?username=${params.id}`).then((res) => {
-            const { data } = res;
+        if (params.type == "tiktok") {
+            get.get(`/customer/item?username=${params.id}`).then((res) => {
+                const { data } = res;
 
-            if (data.data) {
-                setProduct(data.data);
-            }
-        });
+                if (data.data) {
+                    setProduct(data.data);
+                }
+            });
+        } else if (params.type == "youtube") {
+            get.get(`/customer/item?youtube_id=${params.id}`).then((res) => {
+                const { data } = res;
+
+                if (data.data) {
+                    setProduct(data.data);
+                }
+            });
+        }
     };
 
     useEffect(() => {
