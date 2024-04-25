@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Query from "../../api/query";
-import Upload from "../../components/upload";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Input } from "../../components/ui/input";
@@ -12,17 +11,18 @@ import { Button } from "../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import EditSkeleton from "../../components/edit-skeleton";
 import { ToastAction } from "../../components/ui/toast";
+import { Upload } from "antd";
 import { useToast } from "../../components/ui/use-toast";
 import { EmblaOptionsType } from "embla-carousel";
 import EmblaCarousel from "../../components/embla-carousel/embla-carousel";
 import "../../components/embla-carousel/styles/base.css";
 import "../../components/embla-carousel/styles/sandbox.css";
 import "../../components/embla-carousel/styles/embla.css";
+import AntdUpload from "../../components/antd-upload";
 
 const EditProduct = () => {
   const { id } = useParams();
   const { toast } = useToast();
-  const options: EmblaOptionsType = { loop: true };
   const [formData, setFormData] = useState<any>({
     name: "",
     price: "",
@@ -30,6 +30,7 @@ const EditProduct = () => {
     info: "",
     images: [],
   });
+
   const queryParamsArray = [
     {
       id: `item-${id}`,
@@ -47,19 +48,28 @@ const EditProduct = () => {
     });
   };
 
+  const handleUpdateImages = (img: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      images: img,
+    }));
+  };
+
   const handleFormSubmit = () => {
     const data = { method: "post", url: `product/${id}`, content: formData };
     mutation.mutate(data);
     handleDataUpdate();
-    // toast({
-    //   title: "Success! All done.",
-    //   description: "Product updated successfully!",
-    //   action: <ToastAction altText='done'>done</ToastAction>,
-    // });
+    if (mutation.isSuccess) {
+      toast({
+        title: "Success! All done.",
+        description: "Item updated successfully",
+        action: <ToastAction altText='done'>done</ToastAction>,
+      });
+    }
   };
 
   useEffect(() => {
-    if (!queries[0].isLoading) {
+    if (queries[0].isSuccess) {
       setFormData((prev: any) => ({
         ...prev,
         name: queries[0].data.data.name,
@@ -69,15 +79,18 @@ const EditProduct = () => {
         images: queries[0].data.data.images,
       }));
     }
-  }, [formData.images]);
+  }, [queries[0].isSuccess]);
 
   return (
     <>
       {queries[0].isLoading ? (
         <EditSkeleton />
       ) : (
-        <div className='flex md:flex-row flex-col md:gap-20 md:pb-0 pb-24 p-5'>
-          <EmblaCarousel slides={formData.images} options={options} />
+        <div className='flex md:flex-row flex-col md:gap-20 md:pb-0 pb-24 p-5 bg-white'>
+          <AntdUpload
+            images={formData.images}
+            selectImageFn={handleUpdateImages}
+          />
           <div className='w-full'>
             <div className='grid grid-cols-2 gap-4 p-4 bg-white rounded-lg'>
               <div className='col-span-2'>
@@ -136,10 +149,6 @@ const EditProduct = () => {
                   required
                   onChange={(e) => handleFormChange(e)}
                 />
-              </div>
-              <div className='col-span-2'>
-                <Label htmlFor='picture'>Product image</Label>
-                <Upload updateFunction={setFormData} form={formData} />
               </div>
               <div>
                 <Button onClick={handleFormSubmit}>

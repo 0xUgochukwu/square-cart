@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import BottomNav from "../../components/bottomnav";
+import BottomNav from "../../components/bottom-nav";
 import Navbar from "../../components/navbar";
 import Header from "../../components/header";
 import { getCookieData } from "../../services/storage";
