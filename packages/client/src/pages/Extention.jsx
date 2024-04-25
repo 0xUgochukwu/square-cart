@@ -16,6 +16,8 @@ import api from "../configs/endpoint";
 import Shop from "./Shop";
 import User from "./User";
 import Card from "./Card";
+import { ThemeProvider, createTheme } from "@mui/material";
+import platformTheme from "../configs/theme";
 
 const Extention = () => {
     const [value, setValue] = useState(0);
@@ -33,6 +35,17 @@ const Extention = () => {
         console.log({ newValue });
     };
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: platformTheme[params.type], // Define a primary color
+            },
+            text: {
+                primary: platformTheme[params.type], // Define a text color
+            },
+        },
+    });
+
     useEffect(() => {
         socket.emit("join", params.id);
     }, []);
@@ -48,16 +61,20 @@ const Extention = () => {
                     )}
                 </div>
                 <div className="w-full bg-white text-center m-[auto]">
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        centered
-                        className=""
-                    >
-                        <Tab icon={<ShoppingBagIcon />} aria-label="" />
-                        <Tab icon={<CreditCardIcon />} aria-label="" />
-                        <Tab icon={<PersonIcon />} aria-label="" />
-                    </Tabs>
+                    <ThemeProvider theme={theme}>
+                        <Tabs
+                            value={value}
+                            onChange={handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            centered
+                            className=""
+                        >
+                            <Tab icon={<ShoppingBagIcon />} aria-label="" />
+                            <Tab icon={<CreditCardIcon />} aria-label="" />
+                            <Tab icon={<PersonIcon />} aria-label="" />
+                        </Tabs>
+                    </ThemeProvider>
                 </div>
             </div>
         </>

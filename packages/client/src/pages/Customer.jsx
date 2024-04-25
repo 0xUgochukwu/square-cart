@@ -5,8 +5,11 @@ import useFetch from "../hooks/useFetch";
 import api from "../configs/endpoint";
 import axios from "axios";
 import context from "../contexts/context";
+import { useParams } from "react-router-dom";
 
 const CreateCustomer = () => {
+    const params = useParams();
+
     const { toast } = useContext(context);
     const [formType, setFormType] = useState("");
     const [form, setForm] = useState({});
@@ -128,6 +131,12 @@ const CreateCustomer = () => {
         <>
             <div className="p-2 text-center bg-[grey] h-full w-full flex justify-center items-center">
                 <div className="w-full">
+                    <img
+                        className={`${
+                            formType == "signup" ? "hidden" : ""
+                        } h-[50px] w-[50px] text-center m-auto mb-10`}
+                        src={"/" + params.type + ".png"}
+                    ></img>
                     <Input
                         placeholder="Name"
                         className={formType !== "signup" ? "hidden" : ""}
@@ -187,7 +196,11 @@ const CreateCustomer = () => {
                         }}
                     />
                     <br className={formType !== "signup" ? "hidden" : ""} />
-                    <Button text="Get Access" onClick={handleForm} />
+                    <Button
+                        text="Get Access"
+                        onClick={handleForm}
+                        className={`bg-${params.type} text-white !m-0 border-0`}
+                    />
                 </div>
             </div>
         </>

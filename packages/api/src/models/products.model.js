@@ -26,6 +26,17 @@ const productSchema = new mongoose.Schema({
         type: [],
         default: [],
     },
+    youtube_id: {
+        type: String,
+        default: null,
+    },
+    youtube_duration: {
+        type: Object,
+        default: {
+            start: -1,
+            end: -1,
+        },
+    },
     createdAt: {
         type: Date,
         default: Date.now,

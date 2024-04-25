@@ -5,14 +5,17 @@
     "icons": {
         "128": "assets/f.png"
     },
-    "action": {
-        "default_popup": "index.html"
-    },
+    "action": {},
     "permissions": ["activeTab", "storage", "scripting", "background"],
     "content_scripts": [
         {
             "js": ["src/tiktok/inject.js"],
             "matches": ["https://www.tiktok.com/*"],
+            "all_frames": true
+        },
+        {
+            "js": ["src/youtube/inject.js"],
+            "matches": ["https://www.youtube.com/*"],
             "all_frames": true
         }
     ],
