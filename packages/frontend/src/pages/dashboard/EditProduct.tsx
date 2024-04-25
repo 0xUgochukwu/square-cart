@@ -139,14 +139,10 @@ const EditProduct = () => {
               </div>
               <div className='col-span-2'>
                 <Label htmlFor='picture'>Product image</Label>
-                <Upload
-                  updateFunction={setFormData}
-                  form={formData}
-                />
+                <Upload updateFunction={setFormData} form={formData} />
               </div>
               <div>
-                <Button
-                  onClick={handleFormSubmit}>
+                <Button onClick={handleFormSubmit}>
                   {mutation.isPending ? (
                     <>
                       <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />

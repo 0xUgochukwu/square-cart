@@ -86,6 +86,8 @@ class Controller {
                 _id: itemId,
             });
 
+            console.log("it got here");
+
             if (!item) {
                 return sendResponse(res, 400, false, "Item not found!");
             }
