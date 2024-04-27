@@ -66,6 +66,14 @@ class Controller {
                         images: { $slice: ["$images", 1] },
                     },
                 })
+                .populate({
+                    path: "customer",
+                    select: {
+                        name: 1,
+                        picture: 1,
+                        shippingAddress: 1,
+                    },
+                })
                 .sort({ createdAt: -1 });
 
             return successResponse(
