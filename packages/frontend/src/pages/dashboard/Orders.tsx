@@ -10,6 +10,7 @@ import { ToastAction } from "../../components/ui/toast";
 import { useToast } from "../../components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../../components/table-skeleton";
+import Query from "../../api/query";
 
 const Orders = () => {
   const [token, setToken] = useState<string>("");
@@ -24,12 +25,14 @@ const Orders = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: () => {
-      return sendRequest("get", "user/transactions", null, token);
+  const queryParamsArray = [
+    {
+      id: "transactions",
+      url: "user/transactions",
     },
-  });
+  ];
+
+  const { queries, handleDataUpdate } = Query(queryParamsArray);
 
   const mutation = useMutation({
     mutationFn: (newProducts: any) => {
@@ -75,18 +78,22 @@ const Orders = () => {
         action: <ToastAction altText='done'>done</ToastAction>,
       });
     }
-  }, [mutation.isError, error?.message, mutation.isSuccess, data]);
+  }, [mutation.isError, error?.message, mutation.isSuccess, queries[0]]);
 
   return (
     <>
       <div className='w-full flex justify-start py-4 px-3'>
         <p className=' text-xl'>All Orders</p>
       </div>
-      {isLoading ? (
+      {queries[0].isLoading ? (
         <Loading />
       ) : (
-        <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.data} />
+        <div className='w-full overflow-x-scroll bg-white p-4 rounded-xl'>
+          <DataTable
+            columns={columns}
+            data={queries[0].data.data}
+            onDataUpdate={handleDataUpdate}
+          />
         </div>
       )}
     </>

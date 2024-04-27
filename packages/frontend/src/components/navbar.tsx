@@ -17,8 +17,8 @@ const NavbarItem = ({
   location: string;
 }) => (
   <div
-    className={`rounded-lg p-2 group hover:bg-orange-600 ${
-      location === to && "bg-orange-600"
+    className={`rounded-lg p-2 group hover:bg-black ${
+      location === to && "bg-black"
     } transition-all mb-2`}>
     <NavLink
       to={to}
@@ -43,7 +43,7 @@ const Navbar = () => {
           <NavbarItem key={index} {...item} location={location.pathname} />
         ))}
         <div
-          className={`rounded-lg p-2 group hover:bg-orange-600 transition-all mb-2`}>
+          className={`rounded-lg p-2 group hover:bg-black transition-all mb-2`}>
           <NavLink
             className={`text-gray-600 w-full group-hover:text-white`}
             to={""}

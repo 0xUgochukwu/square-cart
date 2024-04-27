@@ -107,7 +107,7 @@ const AntDUpload: React.FC = ({
 const AntDUploadSingle: React.FC = ({
   selectImageFn
 }: {
-  selectImageFn: (images: any) => void;
+  selectImageFn: any;
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const handleChange: UploadProps["onChange"] = async ({

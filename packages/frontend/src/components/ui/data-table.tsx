@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,7 +17,6 @@ import {
   MagnifyingGlassIcon,
   ChevronDownIcon,
   DotsHorizontalIcon,
-  ReloadIcon,
 } from "@radix-ui/react-icons";
 import {
   Table,
@@ -53,11 +52,12 @@ import { NavLink } from "react-router-dom";
 import { useToast } from "./use-toast";
 import { ToastAction } from "./toast";
 import Mutation from "../../api/mutation";
+import { useLocation } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onDataUpdate?: () => void;
+  onDataUpdate: () => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -66,9 +66,11 @@ export function DataTable<TData, TValue>({
   onDataUpdate,
 }: DataTableProps<TData, TValue>) {
   const { toast } = useToast();
+  const location = useLocation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [tableType, setTableType] = useState<string>("order");
   const [rowSelection, setRowSelection] = useState<{ [key: number]: boolean }>(
     {}
   );
@@ -76,11 +78,15 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
     const initialRowSelection: { [key: number]: boolean } = {};
+
     data.forEach((item, index) => {
       if (item?.active) {
         initialRowSelection[index] = true;
       }
     });
+    if (initialRowSelection) {
+      setTableType("shop");
+    }
     setRowSelection(initialRowSelection);
   }, [data]);
 
@@ -95,12 +101,14 @@ export function DataTable<TData, TValue>({
       };
       const deleteItem = await mutation.mutateAsync(data);
       // console.log(deleteItem);
-      onDataUpdate();
-      toast({
-        title: "Success",
-        description: "Item deleted successfully",
-        action: <ToastAction altText='done'>done</ToastAction>,
-      });
+      if (deleteItem.success) {
+        onDataUpdate();
+        toast({
+          title: "Success",
+          description: "Item deleted successfully",
+          action: <ToastAction altText='done'>done</ToastAction>,
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -242,15 +250,28 @@ export function DataTable<TData, TValue>({
                                 <DropdownMenuContent align='end'>
                                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                   <DropdownMenuItem>
-                                    <NavLink
-                                      to={`/dashboard/edit-product/${row.original._id}`}>
-                                      Edit item
-                                    </NavLink>
+                                    {location.pathname === "/dashboard/shop" ? (
+                                      <NavLink
+                                        to={`/dashboard/edit-product/${row.original._id}`}>
+                                        Edit item
+                                      </NavLink>
+                                    ) : (
+                                      <NavLink
+                                        to={`/dashboard/edit-product/${row.original._id}`}>
+                                        Refund
+                                      </NavLink>
+                                    )}
                                   </DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem>
-                                    <DialogTrigger>Delete Item</DialogTrigger>
-                                  </DropdownMenuItem>
+                                  {location.pathname === "/dashboard/shop" && (
+                                    <>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem>
+                                        <DialogTrigger>
+                                          Delete Item
+                                        </DialogTrigger>
+                                      </DropdownMenuItem>
+                                    </>
+                                  )}
                                 </DropdownMenuContent>
                               </DropdownMenu>
                               <DialogContent>
@@ -300,8 +321,7 @@ export function DataTable<TData, TValue>({
       <div className='flex items-center justify-end space-x-2 py-4'>
         <div className='flex-1 text-sm text-muted-foreground'>
           {data && table.getFilteredSelectedRowModel().rows.length}{" "}
-          {data &&  "of"}{" "}
-          {data && table.getFilteredRowModel().rows.length}{" "}
+          {data && "of"} {data && table.getFilteredRowModel().rows.length}{" "}
           {data && "row(s)"}
           {data && "selected."}
         </div>

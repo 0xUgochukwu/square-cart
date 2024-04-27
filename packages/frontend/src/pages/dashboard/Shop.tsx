@@ -201,7 +201,7 @@ const Shop = () => {
       {queries[0].isLoading || queries[1].isLoading ? (
         <TableSkeleton />
       ) : (
-        <div className='w-full overflow-x-scroll bg-white p-4'>
+        <div className='w-full overflow-x-scroll bg-white p-4 rounded-xl'>
           <DataTable
             columns={columns}
             data={product}

@@ -13,14 +13,12 @@ import { useToast } from "../../components/ui/use-toast";
 import "../../components/embla-carousel/styles/base.css";
 import "../../components/embla-carousel/styles/sandbox.css";
 import "../../components/embla-carousel/styles/embla.css";
-import { getCookieData } from "../../services/storage";
+import { getCookieData, getCookie } from "../../services/storage";
 import { AntDUploadSingle } from "../../components/antd-upload";
 
 const Settings = () => {
-  const { id } = useParams();
   const { toast } = useToast();
-  const [token, setToken] = useState<string>("");
-  const [user, setUser] = useState<any>("");
+  const [user, setUser] = useState<any>({});
   const [formData, setFormData] = useState<any>({
     name: "",
     tiktok: "",
@@ -39,7 +37,7 @@ const Settings = () => {
 
   const handleUpdateImages = (img: any) => {
     console.log(img);
-    setFormData((prev: any) => ({
+    setFormData((prev: {picture: string}) => ({
       ...prev,
       picture: img[0],
     }));
@@ -49,12 +47,19 @@ const Settings = () => {
     const data = { method: "post", url: `user/update`, content: formData };
     const update = await mutation.mutateAsync(data);
     if (update.success) {
-      setFormData((prev) => ({
+      setFormData((prev: {[key: string]: any}) => ({
         ...prev,
         name: update.data.name,
         picture: update.data.picture,
         tiktok: update.data.tiktok,
       }));
+      setUser((prev: {[key: string]: any}) => ({
+        ...prev,
+        name: update.data.name,
+        picture: update.data.picture,
+        tiktok: update.data.tiktok,
+      }));
+      console.log(getCookie("@user"));
       toast({
         title: "Success! All done.",
         description: "Item updated successfully",
@@ -64,15 +69,11 @@ const Settings = () => {
   };
 
   useEffect(() => {
-    const tokenData = getCookieData("token");
     const userData = getCookieData("user");
-    if (tokenData) {
-      setToken(tokenData);
-    }
 
     if (userData) {
       setUser(userData);
-      setFormData((prev) => ({
+      setFormData((prev: {[key: string]: any}) => ({
         ...prev,
         name: userData.name,
         picture: userData.picture,
@@ -86,7 +87,7 @@ const Settings = () => {
       {!user ? (
         <EditSkeleton />
       ) : (
-        <div className='flex md:flex-row flex-col items-center md:gap-20 md:pb-5 pb-24 p-5 bg-white'>
+        <div className='flex md:flex-row flex-col items-center md:gap-20 md:pb-5 pb-24 p-5 bg-white rounded-xl'>
           <div className='flex items-center justify-center flex-col md:w-1/2 w-full text-center'>
             <div className='text-gray-500'>
               <img

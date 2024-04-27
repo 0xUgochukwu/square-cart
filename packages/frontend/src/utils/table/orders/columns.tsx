@@ -16,17 +16,44 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "payment_id",
-    header: "Payment ID",
+    accessorKey: "amount",
+    header: "Amount (USD)",
     cell: ({ row }) => {
-      return <Button variant='ghost'>{row.getValue("payment_id")}</Button>;
+      const amount = parseFloat(row.getValue("amount"));
+
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+      return <Button variant='ghost'>{formatted}</Button>;
+    },
+  },
+
+  {
+    accessorKey: "type",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("type");
+
+      return <Button variant='ghost'>{status}</Button>;
     },
   },
   {
-    accessorKey: "customer",
-    header: "Customer",
+    accessorKey: "customer_name",
+    accessorFn: (row) => row.customer.name,
+    header: "Customer Name",
     cell: ({ row }) => {
-      return <div className='font-medium'>{row.getValue("customer")}</div>;
+      const item: any = row.getValue("customer_name");
+      return <div className='font-medium'>{item}</div>;
+    },
+  },
+  {
+    accessorKey: "customer_shippingAddress",
+    accessorFn: (row) => row.customer.shippingAddress,
+    header: "Shipping Address",
+    cell: ({ row }) => {
+      const item: any = row.getValue("customer_shippingAddress");
+      return <div className='font-medium'>{item}</div>;
     },
   },
   {

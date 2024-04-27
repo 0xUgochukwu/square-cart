@@ -83,7 +83,7 @@ const EditProduct = () => {
       {queries[0].isLoading ? (
         <EditSkeleton />
       ) : (
-        <div className='flex md:flex-row flex-col md:gap-20 md:pb-0 pb-24 p-5 bg-white'>
+        <div className='flex md:flex-row flex-col md:gap-20 md:pb-0 pb-24 p-5 bg-white rounded-xl'>
           <AntDUpload
             images={formData.images}
             selectImageFn={handleUpdateImages}
