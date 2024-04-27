@@ -11,14 +11,11 @@ import { Button } from "../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import EditSkeleton from "../../components/edit-skeleton";
 import { ToastAction } from "../../components/ui/toast";
-import { Upload } from "antd";
 import { useToast } from "../../components/ui/use-toast";
-import { EmblaOptionsType } from "embla-carousel";
-import EmblaCarousel from "../../components/embla-carousel/embla-carousel";
 import "../../components/embla-carousel/styles/base.css";
 import "../../components/embla-carousel/styles/sandbox.css";
 import "../../components/embla-carousel/styles/embla.css";
-import AntdUpload from "../../components/antd-upload";
+import { AntDUpload } from "../../components/antd-upload";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -87,7 +84,7 @@ const EditProduct = () => {
         <EditSkeleton />
       ) : (
         <div className='flex md:flex-row flex-col md:gap-20 md:pb-0 pb-24 p-5 bg-white'>
-          <AntdUpload
+          <AntDUpload
             images={formData.images}
             selectImageFn={handleUpdateImages}
           />

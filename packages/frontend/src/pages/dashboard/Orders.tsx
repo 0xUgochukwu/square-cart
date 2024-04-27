@@ -1,22 +1,6 @@
 /** @format */
 import { useState, useEffect } from "react";
-
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../../components/ui/sheet";
-import { Plus } from "lucide-react";
-import Upload from "../../components/upload";
-import { columns } from "../../utils/table/columns";
+import { columns } from "../../utils/table/orders/columns";
 import { DataTable } from "../../components/ui/data-table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
@@ -41,9 +25,9 @@ const Orders = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["transactions"],
     queryFn: () => {
-      return sendRequest("get", "product/", null, token);
+      return sendRequest("get", "user/transactions", null, token);
     },
   });
 
@@ -73,7 +57,7 @@ const Orders = () => {
     if (tokenData) {
       setToken(tokenData);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (mutation.isError) {
@@ -102,7 +86,7 @@ const Orders = () => {
         <Loading />
       ) : (
         <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.message} />
+          <DataTable columns={columns} data={data.data} />
         </div>
       )}
     </>

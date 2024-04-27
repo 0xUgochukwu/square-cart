@@ -57,7 +57,7 @@ import Mutation from "../../api/mutation";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onDataUpdate: () => void;
+  onDataUpdate?: () => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const initialRowSelection: { [key: number]: boolean } = {};
     data.forEach((item, index) => {
-      if (item.active) {
+      if (item?.active) {
         initialRowSelection[index] = true;
       }
     });
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
         content: null,
       };
       const deleteItem = await mutation.mutateAsync(data);
-      console.log(deleteItem);
+      // console.log(deleteItem);
       onDataUpdate();
       toast({
         title: "Success",
@@ -299,8 +299,11 @@ export function DataTable<TData, TValue>({
       </div>
       <div className='flex items-center justify-end space-x-2 py-4'>
         <div className='flex-1 text-sm text-muted-foreground'>
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {data && table.getFilteredSelectedRowModel().rows.length}{" "}
+          {data &&  "of"}{" "}
+          {data && table.getFilteredRowModel().rows.length}{" "}
+          {data && "row(s)"}
+          {data && "selected."}
         </div>
         <div className='space-x-2'>
           <Button

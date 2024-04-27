@@ -3,7 +3,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../../components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<any>[] = [
@@ -29,14 +29,14 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "price",
-    header: "Amount (NGN)",
+    header: "Amount (USD)",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("price"));
 
       // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-NG", {
+      const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "NGN",
+        currency: "USD",
       }).format(amount);
 
       return <div className='font-medium'>{formatted}</div>;
