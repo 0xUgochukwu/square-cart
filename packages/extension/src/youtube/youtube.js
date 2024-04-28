@@ -1,29 +1,29 @@
-const start = ()=>{
-    const API = "http://localhost:2020/v1/api/customer/item?youtube_id="
+const start = () => {
+    const API = "http://localhost:2020/v1/api/customer/item?youtube_id=";
 
-    const parseId = ()=>{
+    const parseId = () => {
         const link = document.location.href;
         switch (true) {
-        case link.includes("youtube.com/watch?v="):
-            return link.split("?v=")[1].split("&")[0];
-        default:
-            return null;
+            case link.includes("youtube.com/watch?v="):
+                return link.split("?v=")[1].split("&")[0];
+            default:
+                return null;
         }
-    }
+    };
 
-    const getUserInfo = ()=>{
+    const getUserInfo = () => {
         try {
             const info = {
-                picture: document.querySelector("img[alt='Avatar image']").src
-            }
+                picture: document.querySelector("img[alt='Avatar image']").src,
+            };
             return info;
         } catch (error) {
             console.log({
-                error
-            })
+                error,
+            });
             return null;
         }
-    }
+    };
 
     const square_url = document.querySelector("#square_url").value;
 
@@ -37,14 +37,14 @@ const start = ()=>{
     if (info) {
         const user = {
             picture: decodeURIComponent(info.picture || ""),
-        }
+        };
 
-        url += `&user=${btoa(encodeURIComponent(JSON.stringify(user)))}`
+        url += `&user=${btoa(encodeURIComponent(JSON.stringify(user)))}`;
         // url += `&user=${JSON.stringify(user)}`
         console.log({
-            info
-        })
-        localStorage.setItem("user", JSON.stringify(user))
+            info,
+        });
+        localStorage.setItem("user", JSON.stringify(user));
     }
 
     const iframe = document.createElement("iframe");
@@ -55,116 +55,109 @@ const start = ()=>{
     const openBtn = document.createElement("div");
     openBtn.id = "square-btn-open";
     openBtn.style.display = "none";
-    openBtn.onclick = ()=>{
+    openBtn.onclick = () => {
         if (iframe.style.display == "none") {
-            iframe.style.animation = "0.5s linear 0s 1 alternate fadeInRight"
+            iframe.style.animation = "0.5s linear 0s 1 alternate fadeInRight";
             iframe.style.display = "block";
         } else {
-            iframe.style.animation = "0.5s linear 0s 1 alternate fadeOutRight"
-            setTimeout(()=>{
+            iframe.style.animation = "0.5s linear 0s 1 alternate fadeOutRight";
+            setTimeout(() => {
                 iframe.style.display = "none";
-            }
-            , 400);
+            }, 400);
         }
-    }
+    };
 
     document.body.appendChild(openBtn);
     document.body.appendChild(iframe);
 
-    const pauseCurrentVideo = ()=>{
-        let video = document.querySelector('video');
+    const pauseCurrentVideo = () => {
+        let video = document.querySelector("video");
         if (video != null) {
             video.pause();
         }
-    }
+    };
 
-    const resumeCurrentVideo = ()=>{
-        let video = document.querySelector('video');
+    const resumeCurrentVideo = () => {
+        let video = document.querySelector("video");
         if (video != null) {
             video.play();
         }
-    }
+    };
 
-    iframe.onmouseenter = ()=>{
+    iframe.onmouseenter = () => {
         pauseCurrentVideo();
-    }
+    };
 
-    iframe.onmouseleave = ()=>{
+    iframe.onmouseleave = () => {
         resumeCurrentVideo();
-    }
+    };
 
-    const pollVideo = (start,end,rate)=>{
-
+    const pollVideo = (start, end, rate) => {
         console.log({
             start,
             end,
-            rate
+            rate,
         });
 
         let showing = false;
 
-        return setInterval(function() {
-
-            let currentTime = document.getElementsByTagName('video')[0].currentTime;
+        return setInterval(function () {
+            let currentTime =
+                document.getElementsByTagName("video")[0].currentTime;
 
             if (currentTime > Number(start) && currentTime < Number(end)) {
                 if (!showing) {
-                    window.dispatchEvent(new Event('showProduct'));
-                    showing = true
+                    window.dispatchEvent(new Event("showProduct"));
+                    showing = true;
                 }
-
             } else if (showing) {
-                window.dispatchEvent(new Event('hideProduct'));
+                window.dispatchEvent(new Event("hideProduct"));
                 showing = false;
             }
 
             console.log({
-                currentTime
-            })
-
+                currentTime,
+            });
         }, rate);
-    }
+    };
 
-    const watchForDuration = async()=>{
+    const watchForDuration = async () => {
         const item = await fetch(`${API}${id}`, {
-            mode: "cors"
-        }).then(response=>response.json());
+            mode: "cors",
+        }).then((response) => response.json());
 
         if (item.data.info.youtube_duration) {
             try {
-                const {start, end} = item.data.info.youtube_duration;
+                const { start, end } = item.data.info.youtube_duration;
 
                 pollVideo(start, end, 1000);
             } catch (error) {
                 console.log(error);
             }
         }
-    }
+    };
 
-    window.addEventListener('showProduct', ()=>{
-        iframe.style.animation = "0.5s linear 0s 1 alternate fadeInRight"
+    window.addEventListener("showProduct", () => {
+        iframe.style.animation = "0.5s linear 0s 1 alternate fadeInRight";
         iframe.style.display = "block";
-        console.log('Showing product now');
-    }
-    )
-
-    window.addEventListener('hideProduct', ()=>{
-        iframe.style.animation = "0.5s linear 0s 1 alternate fadeOutRight"
-        setTimeout(()=>{
-            iframe.style.display = "none";
-        }
-        , 400);
         openBtn.style.display = "block";
-        console.log('Hiding product now');
-    }
-    )
+        console.log("Showing product now");
+    });
 
-    watchForDuration()
+    window.addEventListener("hideProduct", () => {
+        iframe.style.animation = "0.5s linear 0s 1 alternate fadeOutRight";
+        setTimeout(() => {
+            iframe.style.display = "none";
+        }, 400);
+        openBtn.style.display = "block";
+        console.log("Hiding product now");
+    });
 
-}
+    watchForDuration();
+};
 
 document.body.onload = () => {
     setTimeout(() => {
         start();
-    }, 1000)
-}
+    }, 1000);
+};

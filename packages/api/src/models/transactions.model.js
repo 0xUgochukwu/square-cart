@@ -39,6 +39,9 @@ const transactionSchema = new mongoose.Schema({
         required: true,
         ref: "Product",
     },
+    quantity: {
+        type: Number,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

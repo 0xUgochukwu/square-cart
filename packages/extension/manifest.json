@@ -1,9 +1,10 @@
 {
     "manifest_version": 3,
-    "name": "Square",
+    "name": "InstaBuy",
+    "description": "A Chrome Extention for easily purchasing items online",
     "version": "1.0.0",
     "icons": {
-        "128": "assets/f.png"
+        "128": "assets/icon2.png"
     },
     "action": {},
     "permissions": ["activeTab", "storage", "scripting", "background"],
