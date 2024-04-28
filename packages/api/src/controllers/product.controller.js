@@ -222,6 +222,7 @@ class Controller {
                 user: seller._id,
                 item: product._id,
                 amount: product.price * Number(quantity),
+                quantity,
                 type: "PAID",
                 payment_id,
                 order_id,

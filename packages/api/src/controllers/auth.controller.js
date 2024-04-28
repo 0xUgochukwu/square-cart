@@ -110,6 +110,7 @@ class AuthController {
                         email: user.email,
                         gender: user.gender,
                         picture: user.picture,
+                        tiktok: user.tiktok,
                     },
                 });
             }

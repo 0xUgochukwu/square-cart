@@ -4,6 +4,7 @@ import * as React from "react";
 import { CreditCard, PaymentForm } from "react-square-web-payments-sdk";
 import platformTheme from "../configs/theme";
 import { useParams } from "react-router-dom";
+import { applicationId, locationId } from "../env";
 
 const CardForm = ({ callback }) => {
     const params = useParams();
@@ -12,9 +13,9 @@ const CardForm = ({ callback }) => {
 
     return (
         <PaymentForm
-            applicationId="sandbox-sq0idb-V840f89hCXiXpg7CId4_sQ"
+            applicationId={applicationId}
             cardTokenizeResponseReceived={callback}
-            locationId="LS9219ZYC46XG"
+            locationId={locationId}
             createVerificationDetails={() => ({
                 billingContact: {
                     addressLines: [user.billingAddress || ""],

@@ -80,7 +80,9 @@ const ShopItem = ({ info, images }) => {
                     className="p-3"
                 />
                 {buying ? (
-                    <Button className="!w-[100px] !bg-[#fe2c55] text-white !m-0 text-center flex justify-center items-center">
+                    <Button
+                        className={`!w-[100px] bg-${params.type} text-white !m-0 text-center flex justify-center items-center`}
+                    >
                         <SpinnerSmall size="sm" />
                     </Button>
                 ) : (
