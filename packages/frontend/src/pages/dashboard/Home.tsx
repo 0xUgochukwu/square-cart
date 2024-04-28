@@ -52,7 +52,7 @@ function Home() {
           </Card>
         </div>
         <div className='md:col-span-5 col-span-12'>
-          <Card className='rounded-xl mr-2 p-6'>
+          <Card className='rounded-xl md:mr-2 md:p-6 p-2'>
             <div>
               <p className='text-2xl text-indigo-900'>
                 My Store <br />
@@ -76,9 +76,9 @@ function Home() {
         </div>
       </div>
 
-      <div className='grid md:grid-flow-col gap-4'>
+      <div className='grid md:grid-flow-col gap-4 pb-20'>
         <div className='md:col-span-7 col-span-12'>
-          <Card className='bg-no-repeat border rounded-xl mr-2 p-6'>
+          <Card className='bg-no-repeat border rounded-xl md:mr-2 md:p-6'>
             <div>
               {queries[1].isLoading ? (
                 <>

@@ -114,6 +114,27 @@ export function DataTable<TData, TValue>({
     }
   };
 
+  const handleRefund = async (id: string) => {
+    try {
+      const data = {
+        method: "post",
+        url: `product/refund`,
+        content: { id },
+      };
+      const refundItem = await mutation.mutateAsync(data);
+      if (refundItem.success) {
+        onDataUpdate();
+        toast({
+          title: "Success",
+          description: refundItem.message,
+          action: <ToastAction altText='done'>done</ToastAction>,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCheckboxChange = async (index: number, item: any) => {
     const newRowSelection: { [key: number]: boolean } = {};
     newRowSelection[index] = !rowSelection[index];
@@ -256,10 +277,14 @@ export function DataTable<TData, TValue>({
                                         Edit item
                                       </NavLink>
                                     ) : (
-                                      <NavLink
-                                        to={`/dashboard/edit-product/${row.original._id}`}>
+                                      <Button
+                                        variant={"outline"}
+                                        className="border-0 hover:shadow-none bg-transparent shadow-none"
+                                        onClick={() =>
+                                          handleRefund(row.original._id)
+                                        }>
                                         Refund
-                                      </NavLink>
+                                      </Button>
                                     )}
                                   </DropdownMenuItem>
                                   {location.pathname === "/dashboard/shop" && (
