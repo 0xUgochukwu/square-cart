@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "InstaBuy",
+    "name": "Square Cart",
     "description": "A Chrome Extention for easily purchasing items online",
     "version": "1.0.0",
     "icons": {

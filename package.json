@@ -9,7 +9,7 @@
     ],
     "scripts": {
         "test": "",
-        "start": "cd packages/api && node ./src/app.js",
+        "start": "yarn workspace api install && yarn workspace api run start",
         "api": "yarn workspace api run dev",
         "client": "yarn workspace client run dev",
         "dev": "yarn workspace frontend run dev",
