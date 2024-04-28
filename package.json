@@ -8,8 +8,7 @@
         "packages/*"
     ],
     "scripts": {
-        "test": "",
-        "start": "yarn workspace api install && yarn workspace api run start",
+        "start": "yarn workspace api run start",
         "api": "yarn workspace api run dev",
         "client": "yarn workspace client run dev",
         "dev": "yarn workspace frontend run dev",
