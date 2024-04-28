@@ -12,7 +12,7 @@
         "api": "yarn workspace api run dev",
         "client": "yarn workspace client run dev",
         "dev": "yarn workspace frontend run dev",
-        "build": "yarn workspaces run build",
+        "build": "yarn workspaces api run build",
         "watch": "yarn workspaces run watch"
     },
     "keywords": [],
