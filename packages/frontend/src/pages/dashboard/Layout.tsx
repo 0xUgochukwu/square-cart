@@ -4,19 +4,20 @@ import React, { useEffect, useState } from "react";
 import BottomNav from "../../components/bottom-nav";
 import Navbar from "../../components/navbar";
 import Header from "../../components/header";
-import { getCookieData } from "../../services/storage";
+import { getLocalStorage } from "../../services/storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Socket from "../../hooks/socket";
+import { encodeIfURL } from "../../services/helpers";
 
 const queryClient = new QueryClient();
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [userData, setUserData] = useState<any>(null);
+  const [profilePicture, setProfilePicture] = useState<string>("");
 
   useEffect(() => {
-    const data = getCookieData("user");
-    if (data) {
-      setUserData(data);
+    const base64image = getLocalStorage("@picture");
+    if (base64image) {
+      setProfilePicture(JSON.parse(base64image));
     }
   }, []);
 
@@ -24,7 +25,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <Socket />
       <div className='bg-slate-100 min-h-screen'>
-        <Header image={encodeURI(userData?.picture) || ""} />
+        <Header image={encodeIfURL(profilePicture) || ""} />
         <div className='grid grid-cols-1  sm:grid-cols-12 gap-4'>
           <div className='hidden sm:block sm:col-span-2'>
             <Navbar />

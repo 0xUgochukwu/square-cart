@@ -17,6 +17,7 @@ import {
   MagnifyingGlassIcon,
   ChevronDownIcon,
   DotsHorizontalIcon,
+  ReloadIcon,
 } from "@radix-ui/react-icons";
 import {
   Table,
@@ -48,11 +49,22 @@ import {
   DialogTrigger,
   DialogClose,
 } from "./dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
 import { NavLink } from "react-router-dom";
 import { useToast } from "./use-toast";
 import { ToastAction } from "./toast";
 import Mutation from "../../api/mutation";
 import { useLocation } from "react-router-dom";
+import { Plus } from "lucide-react";
+import { Label } from "./label";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -70,7 +82,10 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [tableType, setTableType] = useState<string>("order");
+  const [videoLink, setVideoLink] = useState<{ [key: string]: string }>({});
+  const [startTime, setStartTime] = useState<{ [key: string]: string }>({});
+  const [endTime, setEndTime] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState<{ [key: number]: boolean }>(
     {}
   );
@@ -84,9 +99,6 @@ export function DataTable<TData, TValue>({
         initialRowSelection[index] = true;
       }
     });
-    if (initialRowSelection) {
-      setTableType("shop");
-    }
     setRowSelection(initialRowSelection);
   }, [data]);
 
@@ -157,6 +169,59 @@ export function DataTable<TData, TValue>({
       } catch (error) {
         console.error(error);
       }
+    }
+  };
+
+  const handleFormChange = (
+    e: React.FormEvent<HTMLFormElement>,
+    inputName: string
+  ) => {
+    const target = e.target as HTMLInputElement;
+    if (inputName === "video") {
+      setVideoLink((prev) => ({
+        ...prev,
+        [target.name]: target.value,
+      }));
+    }
+    if (inputName === "start") {
+      setStartTime((prev) => ({
+        ...prev,
+        [target.name]: target.value,
+      }));
+    }
+    if (inputName === "end") {
+      setEndTime((prev) => ({
+        ...prev,
+        [target.name]: target.value,
+      }));
+    }
+  };
+
+  const handleFormSubmit = (id: string) => async () => {
+    try {
+      setLoading(true);
+      const content = {
+        youtube_id: videoLink[`youtube_id_${id}`],
+        start: startTime[`start_${id}`],
+        end: endTime[`end_${id}`],
+      };
+      const data = {
+        method: "post",
+        url: `product/youtube/${id}`,
+        content,
+      };
+      const addToSocial = await mutation.mutateAsync(data);
+      if (addToSocial.success) {
+        toast({
+          title: "Success",
+          description: "Item successfully added to social",
+          action: <ToastAction altText='done'>done</ToastAction>,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -255,6 +320,107 @@ export function DataTable<TData, TValue>({
                             aria-label='Select row'
                           />
                         </div>
+                      ) : cell.column.id === "social" ? (
+                        <Dialog>
+                          <DialogTrigger>
+                            <Button
+                              variant={"outline"}
+                              className='border-0 shadow-none active:bg-muted hover:bg-muted  '>
+                              <Plus />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Add this item to your social
+                              </DialogTitle>
+                              <DialogDescription>
+                                <Select>
+                                  <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Select Social Media' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>
+                                        Select Social Media
+                                      </SelectLabel>
+                                      <SelectItem value='youtube'>
+                                        Youtube
+                                      </SelectItem>
+                                      <SelectItem value='kick'>Kick</SelectItem>
+                                      <SelectItem value='twitch'>
+                                        Twitch
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                                <div className='mt-2'>
+                                  <Label>Video Link</Label>
+                                  <Input
+                                    type='text'
+                                    className='mt-2'
+                                    placeholder='Video Link'
+                                    name={`youtube_id_${row.original._id}`}
+                                    value={
+                                      videoLink[
+                                        `youtube_id_${row.original._id}`
+                                      ]
+                                    }
+                                    required
+                                    onChange={(e) =>
+                                      handleFormChange(e, "video")
+                                    }
+                                  />
+                                </div>
+                                <div className='mt-2'>
+                                  <Label>Start Time</Label>
+                                  <Input
+                                    type='time'
+                                    placeholder='Start Time'
+                                    name={`start_${row.original._id}`}
+                                    className='mt-2'
+                                    value={
+                                      startTime[`start_${row.original._id}`]
+                                    }
+                                    required
+                                    onChange={(e) =>
+                                      handleFormChange(e, "start")
+                                    }
+                                  />
+                                </div>
+                                <div className='mt-2'>
+                                  <Label>End Time</Label>
+                                  <Input
+                                    type='time'
+                                    placeholder='End Time'
+                                    className='mt-2'
+                                    name={`end_${row.original._id}`}
+                                    value={endTime[`end_${row.original._id}`]}
+                                    required
+                                    onChange={(e) => handleFormChange(e, "end")}
+                                  />
+                                </div>
+                                <div className='mt-2 pb-5'>
+                                  <Button
+                                    className='w-full mt-5'
+                                    onClick={() =>
+                                      handleFormSubmit(row.original._id)
+                                    }
+                                    disabled={loading}>
+                                    {loading ? (
+                                      <>
+                                        <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+                                        Please wait
+                                      </>
+                                    ) : (
+                                      "Submit"
+                                    )}
+                                  </Button>
+                                </div>
+                              </DialogDescription>
+                            </DialogHeader>
+                          </DialogContent>
+                        </Dialog>
                       ) : cell.column.id === "action" ? (
                         <div className='flex justify-center md:w-1/3 w-full'>
                           <>
@@ -279,7 +445,7 @@ export function DataTable<TData, TValue>({
                                     ) : (
                                       <Button
                                         variant={"outline"}
-                                        className="border-0 hover:shadow-none bg-transparent shadow-none"
+                                        className='border-0 hover:shadow-none bg-transparent shadow-none'
                                         onClick={() =>
                                           handleRefund(row.original._id)
                                         }>

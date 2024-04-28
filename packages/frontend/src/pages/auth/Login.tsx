@@ -8,7 +8,7 @@ import { Label } from "../../components/ui/label";
 import { useToast } from "../../components/ui/use-toast";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
 import { ExclamationTriangleIcon, ReloadIcon } from "@radix-ui/react-icons";
-import { setCookie } from "../../services/storage";
+import { setCookie, setLocalStorage } from "../../services/storage";
 import { ToastAction } from "../../components/ui/toast";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 
@@ -32,14 +32,19 @@ const Login = () => {
   const handleFormSubmit = async () => {
     try {
       const data = await sendRequest("post", "auth/login", formData);
-      setCookie("@user", JSON.stringify(data.data), 1);
+      console.log(data.data, JSON.stringify(data.data));
+      const {
+        user: { picture, ...userDataWithoutPictureUrl },
+        token,
+      } = data.data;
+      setCookie("@user", JSON.stringify(userDataWithoutPictureUrl), 1);
+      setCookie("@token", JSON.stringify(token), 1);
+      setLocalStorage("@picture", JSON.stringify(picture));
       toast({
-          title: "Success",
-          description: data.message,
-          action: (
-            <ToastAction altText="done">done</ToastAction>
-          ),
-        });
+        title: "Success",
+        description: data.message,
+        action: <ToastAction altText='ok'>ok</ToastAction>,
+      });
       navigate("/dashboard/home");
     } catch (error: any) {
       console.error("Error occurred during registration:", error.message);

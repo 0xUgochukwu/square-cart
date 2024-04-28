@@ -45,3 +45,12 @@ export const formatAmount = (amount: number) => {
     maximumFractionDigits: 2,
   });
 };
+
+export const encodeIfURL = (str: string) : string => {
+  try {
+    const url = new URL(str);
+    return encodeURI(str);
+  } catch (error) {
+    return str;
+  }
+};

@@ -1,3 +1,5 @@
+/** @format */
+
 import { useNavigate } from "react-router-dom";
 
 export const setCookie = (name: string, value: string, days: number) => {
@@ -33,18 +35,23 @@ export const setLocalStorage = (key: string, value: string) => {
 };
 
 export const getLocalStorage = (key: string) => {
-  return localStorage.getItem(key);
+  const data = localStorage.getItem(key);
+  if (data === null) {
+    return null;
+  }
+  return data;
 };
 
+
 export const getCookieData = (dataType: string) => {
-  const data = getCookie("@user");
+  const data = getCookie(dataType === "user" ? "@user" : "@token");
   if (data) {
-    const { user, token } = JSON.parse(data);
+    const jsonData = JSON.parse(data);
     return dataType === "user"
-      ? user
+      ? jsonData
       : {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${jsonData}`,
           },
         };
   }
@@ -55,4 +62,4 @@ export const Logout = () => {
   clearCookie("@user");
   const navigate = useNavigate();
   navigate("/");
-}
+};

@@ -13,7 +13,7 @@ import { useToast } from "../../components/ui/use-toast";
 import "../../components/embla-carousel/styles/base.css";
 import "../../components/embla-carousel/styles/sandbox.css";
 import "../../components/embla-carousel/styles/embla.css";
-import { getCookieData, getCookie } from "../../services/storage";
+import { getCookieData, getCookie, getLocalStorage, setCookie, setLocalStorage } from "../../services/storage";
 import { AntDUploadSingle } from "../../components/antd-upload";
 
 const Settings = () => {
@@ -53,13 +53,8 @@ const Settings = () => {
         picture: update.data.picture,
         tiktok: update.data.tiktok,
       }));
-      setUser((prev: {[key: string]: any}) => ({
-        ...prev,
-        name: update.data.name,
-        picture: update.data.picture,
-        tiktok: update.data.tiktok,
-      }));
-      console.log(getCookie("@user"));
+      setCookie("@user", JSON.stringify(update.data), 1);
+      setLocalStorage("@picture", JSON.stringify(update.data.picture));
       toast({
         title: "Success! All done.",
         description: "Item updated successfully",
@@ -70,21 +65,21 @@ const Settings = () => {
 
   useEffect(() => {
     const userData = getCookieData("user");
+    const profilePicture = getLocalStorage("@picture");
 
     if (userData) {
-      setUser(userData);
-      setFormData((prev: {[key: string]: any}) => ({
+      setFormData((prev: { [key: string]: any }) => ({
         ...prev,
         name: userData.name,
-        picture: userData.picture,
         tiktok: userData.tiktok || "tiktok",
+        picture: profilePicture ? JSON.parse(profilePicture) : "",
       }));
     }
   }, []);
 
   return (
     <>
-      {!user ? (
+      {!formData.name ? (
         <EditSkeleton />
       ) : (
         <div className='flex md:flex-row flex-col items-center md:gap-20 md:pb-5 pb-24 p-5 bg-white rounded-xl'>

@@ -15,6 +15,12 @@ export const columns: ColumnDef<any>[] = [
     enableHiding: false,
   },
   {
+    id: "social",
+    accessorKey: "social",
+    header: "Add to Social",
+    enableHiding: false,
+  },
+  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -33,7 +39,6 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("price"));
 
-      // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
