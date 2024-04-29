@@ -5,11 +5,23 @@ import BottomNav from "../../components/bottom-nav";
 import Navbar from "../../components/navbar";
 import Header from "../../components/header";
 import { getLocalStorage } from "../../services/storage";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import Socket from "../../hooks/socket";
 import { encodeIfURL } from "../../services/helpers";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24,
+    },
+  },
+});
+
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+});
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [profilePicture, setProfilePicture] = useState<string>("");
@@ -22,7 +34,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}>
       <Socket />
       <div className='bg-slate-100 min-h-screen'>
         <Header image={encodeIfURL(profilePicture) || ""} />
@@ -36,7 +50,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <BottomNav />
         </div>
       </div>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 };
 

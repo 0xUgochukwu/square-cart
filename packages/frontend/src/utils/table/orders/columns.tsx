@@ -28,12 +28,21 @@ export const columns: ColumnDef<any>[] = [
       return <Button variant='ghost'>{formatted}</Button>;
     },
   },
+  {
+    accessorKey: "quantity",
+    header: "Quantity (Pcs)",
+    cell: ({ row }) => {
+      const quantity = parseFloat(row.getValue("quantity"));
+
+      return <Button variant='ghost'>{quantity || 1}</Button>;
+    },
+  },
 
   {
     accessorKey: "type",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("type");
+      const status: string = row.getValue("type");
 
       return <Button variant='ghost'>{status}</Button>;
     },

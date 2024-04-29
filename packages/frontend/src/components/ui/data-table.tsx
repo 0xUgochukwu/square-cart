@@ -197,7 +197,7 @@ export function DataTable<TData, TValue>({
     }
   };
 
-  const handleFormSubmit = (id: string) => async () => {
+  const handleFormSubmit = async (id: string) => {
     try {
       setLoading(true);
       const content = {
@@ -212,6 +212,7 @@ export function DataTable<TData, TValue>({
       };
       const addToSocial = await mutation.mutateAsync(data);
       if (addToSocial.success) {
+
         toast({
           title: "Success",
           description: "Item successfully added to social",
@@ -375,7 +376,7 @@ export function DataTable<TData, TValue>({
                                 <div className='mt-2'>
                                   <Label>Start Time</Label>
                                   <Input
-                                    type='time'
+                                    type='number'
                                     placeholder='Start Time'
                                     name={`start_${row.original._id}`}
                                     className='mt-2'
@@ -391,7 +392,7 @@ export function DataTable<TData, TValue>({
                                 <div className='mt-2'>
                                   <Label>End Time</Label>
                                   <Input
-                                    type='time'
+                                    type='number'
                                     placeholder='End Time'
                                     className='mt-2'
                                     name={`end_${row.original._id}`}
@@ -400,7 +401,7 @@ export function DataTable<TData, TValue>({
                                     onChange={(e) => handleFormChange(e, "end")}
                                   />
                                 </div>
-                                <div className='mt-2 pb-5'>
+                                <DialogClose className='mt-2 pb-5 w-full'>
                                   <Button
                                     className='w-full mt-5'
                                     onClick={() =>
@@ -416,7 +417,7 @@ export function DataTable<TData, TValue>({
                                       "Submit"
                                     )}
                                   </Button>
-                                </div>
+                                </DialogClose>
                               </DialogDescription>
                             </DialogHeader>
                           </DialogContent>

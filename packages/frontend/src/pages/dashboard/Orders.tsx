@@ -14,13 +14,6 @@ import Query from "../../api/query";
 
 const Orders = () => {
   const [token, setToken] = useState<string>("");
-  const [formData, setFormData] = useState<any>({
-    name: "",
-    price: "",
-    quantity: "",
-    info: "",
-    images: [],
-  });
   const { error, sendRequest } = useAxiosRequest<any>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -42,18 +35,6 @@ const Orders = () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
-
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
-    const target = e.target as HTMLInputElement;
-    setFormData({
-      ...formData,
-      [target.name]: target.value,
-    });
-  };
-
-  const handleFormSubmit = () => {
-    mutation.mutate(formData);
-  };
 
   useEffect(() => {
     const tokenData = getCookieData("token");
