@@ -4,5 +4,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const user = urlParams.get("user");
 
-iframe.src = `http://localhost:5173/social/youtube/${id}?user=${user}`;
+// iframe.src = `http://localhost:5173/social/youtube/${id}?user=${user}`;
+iframe.src = `https://squarecart-client.netlify.app/social/youtube/${id}?user=${user}`;
 document.body.appendChild(iframe);

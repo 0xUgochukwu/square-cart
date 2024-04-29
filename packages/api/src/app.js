@@ -70,6 +70,13 @@ app.get("/", (req, res) => {
 // });
 
 // socketTransactions(io);
+socket.initSocket(server);
+
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "aPi Is LiVe!",
+    });
+});
 
 const PORT = process.env.PORT || 5505;
 
