@@ -49,6 +49,7 @@ export const formatAmount = (amount: number) => {
 export const encodeIfURL = (str: string) : string => {
   try {
     const url = new URL(str);
+    console.log(url);
     return encodeURI(str);
   } catch (error) {
     return str;
