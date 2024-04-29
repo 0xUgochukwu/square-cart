@@ -15,7 +15,7 @@ import {
 } from "../../components/ui/sheet";
 import { Plus } from "lucide-react";
 import Upload from "../../components/upload";
-import { columns } from "../../utils/table/columns";
+import { columns } from "../../utils/table/products/columns";
 import { DataTable } from "../../components/ui/data-table";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ToastAction } from "../../components/ui/toast";
@@ -201,7 +201,7 @@ const Shop = () => {
       {queries[0].isLoading || queries[1].isLoading ? (
         <TableSkeleton />
       ) : (
-        <div className='w-full overflow-x-scroll bg-white p-4'>
+        <div className='w-full overflow-x-scroll bg-white p-4 rounded-xl'>
           <DataTable
             columns={columns}
             data={product}

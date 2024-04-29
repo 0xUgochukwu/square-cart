@@ -1,22 +1,6 @@
 /** @format */
 import { useState, useEffect } from "react";
-
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../../components/ui/sheet";
-import { Plus } from "lucide-react";
-import Upload from "../../components/upload";
-import { columns } from "../../utils/table/columns";
+import { columns } from "../../utils/table/orders/columns";
 import { DataTable } from "../../components/ui/data-table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosRequest from "../../hooks/useAxiosRequest";
@@ -26,6 +10,7 @@ import { ToastAction } from "../../components/ui/toast";
 import { useToast } from "../../components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../../components/table-skeleton";
+import Query from "../../api/query";
 
 const Orders = () => {
   const [token, setToken] = useState<string>("");
@@ -40,12 +25,14 @@ const Orders = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => {
-      return sendRequest("get", "product/", null, token);
+  const queryParamsArray = [
+    {
+      id: "transactions",
+      url: "user/transactions",
     },
-  });
+  ];
+
+  const { queries, handleDataUpdate } = Query(queryParamsArray);
 
   const mutation = useMutation({
     mutationFn: (newProducts: any) => {
@@ -73,7 +60,7 @@ const Orders = () => {
     if (tokenData) {
       setToken(tokenData);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (mutation.isError) {
@@ -91,18 +78,22 @@ const Orders = () => {
         action: <ToastAction altText='done'>done</ToastAction>,
       });
     }
-  }, [mutation.isError, error?.message, mutation.isSuccess, data]);
+  }, [mutation.isError, error?.message, mutation.isSuccess, queries[0]]);
 
   return (
     <>
       <div className='w-full flex justify-start py-4 px-3'>
         <p className=' text-xl'>All Orders</p>
       </div>
-      {isLoading ? (
+      {queries[0].isLoading ? (
         <Loading />
       ) : (
-        <div className='w-full overflow-x-scroll bg-white p-4'>
-          <DataTable columns={columns} data={data.message} />
+        <div className='w-full overflow-x-scroll bg-white p-4 rounded-xl'>
+          <DataTable
+            columns={columns}
+            data={queries[0].data.data}
+            onDataUpdate={handleDataUpdate}
+          />
         </div>
       )}
     </>
