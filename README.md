@@ -40,7 +40,7 @@ To access the Square Cart admin panel, follow these steps:
 
 To test the SquareCart admin panel as a seller, creator, admin, or influencer, follow these steps:
 
-1. **Access the Admin Panel**: Click (HERE)[https://squarecart.netlify.app/] to access the SquareCart admin panel.
+1. **Access the Admin Panel**: Click [HERE](https://squarecart.netlify.app/) to access the SquareCart admin panel.
 
 2. **Login/Register**: If you already have an account, log in using your credentials. Otherwise, register for a new account.
 
@@ -59,7 +59,7 @@ To test the SquareCart admin panel as a seller, creator, admin, or influencer, f
 
 To test the SquareCart extension as a user, follow these steps:
 
-1. **Download the Extension**: Click (HERE)[https://drive.google.com/file/d/1t7HYFfK45m9ZaTISujn23Rq2ZHxxJqOB/view?usp=sharing] to download the SquareCart Chrome extension.
+1. **Download the Extension**: Click [HERE](https://drive.google.com/file/d/1t7HYFfK45m9ZaTISujn23Rq2ZHxxJqOB/view?usp=sharing) to download the SquareCart Chrome extension.
    
 2. **Install the Extension**: Once downloaded, unzip the file and navigate to the Chrome browser. Open the Extensions page by typing "chrome://extensions/" in the address bar.
 
