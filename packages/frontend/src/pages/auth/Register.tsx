@@ -9,7 +9,7 @@ import useAxiosRequest from "../../hooks/useAxiosRequest";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useToast } from "../../components/ui/use-toast";
-import { setCookie } from "../../services/storage";
+import { setCookie, setLocalStorage } from "../../services/storage";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ToastAction } from "../../components/ui/toast";
 
@@ -35,8 +35,14 @@ const Register = () => {
   const handleFormSubmit = async () => {
     try {
       const data = await sendRequest("post", "auth/signup", formData);
+      const {
+        user: { picture, ...userDataWithoutPictureUrl },
+        token,
+      } = data.data;
 
-      setCookie("@user", JSON.stringify(data.data), 1);
+      setCookie("@user", JSON.stringify(userDataWithoutPictureUrl), 1);
+      setCookie("@token", JSON.stringify(token), 1);
+      setLocalStorage("@picture", JSON.stringify(picture));
       toast({
         title: "Success",
         description: data.message,
