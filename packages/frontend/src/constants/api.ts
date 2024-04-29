@@ -11,6 +11,6 @@ if (document.location.hostname.startsWith("172")) {
   api = "http://" + document.location.hostname + ":2020";
 }
 
-export const ENDPOINT = "https://square-hackathon.onrender.com/";
+export const ENDPOINT = "https://square-hackathon.onrender.com";
 
 export default api + "/v1/api";
