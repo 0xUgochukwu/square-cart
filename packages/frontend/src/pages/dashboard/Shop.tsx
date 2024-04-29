@@ -48,8 +48,16 @@ const Shop = () => {
   const { queries, handleDataUpdate } = Query(queryParamsArray);
   const { mutation } = Mutation();
 
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
+    setFormData({
+      ...formData,
+      [target.name]: target.value,
+    });
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const target = e.target as HTMLTextAreaElement;
     setFormData({
       ...formData,
       [target.name]: target.value,
@@ -73,7 +81,7 @@ const Shop = () => {
       toast({
         variant: "destructive",
         title: "Uh oh! we've got a problem.",
-        description: mutation.error?.response?.data?.message,
+        description: "something went wrong, please retry again",
         action: <ToastAction altText='Try again'>Try again</ToastAction>,
       });
     }
@@ -174,7 +182,7 @@ const Shop = () => {
                   className='mt-2'
                   value={formData.info}
                   required
-                  onChange={(e) => handleFormChange(e)}
+                  onChange={(e) => handleTextAreaChange(e)}
                 />
               </div>
               <div className='grid w-full max-w-sm items-center gap-1.5'>

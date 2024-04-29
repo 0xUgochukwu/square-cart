@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const initialRowSelection: { [key: number]: boolean } = {};
 
-    data.forEach((item, index) => {
+    data.forEach((item: any, index: number) => {
       if (item?.active) {
         initialRowSelection[index] = true;
       }
@@ -173,9 +173,9 @@ export function DataTable<TData, TValue>({
   };
 
   const handleFormChange = (
-    e: React.FormEvent<HTMLFormElement>,
-    inputName: string
-  ) => {
+    e: React.ChangeEvent<HTMLInputElement>,
+    inputName
+  : string) => {
     const target = e.target as HTMLInputElement;
     if (inputName === "video") {
       setVideoLink((prev) => ({
@@ -212,7 +212,6 @@ export function DataTable<TData, TValue>({
       };
       const addToSocial = await mutation.mutateAsync(data);
       if (addToSocial.success) {
-
         toast({
           title: "Success",
           description: "Item successfully added to social",
@@ -303,11 +302,11 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, rowIndex) => (
+              table.getRowModel().rows.map((row: any, rowIndex) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell: any) => (
                     <TableCell key={cell.id} className=''>
                       {cell.column.id === "active" ? (
                         <div className='flex justify-center md:w-1/3 w-full'>

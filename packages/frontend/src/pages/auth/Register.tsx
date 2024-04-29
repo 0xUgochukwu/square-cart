@@ -24,7 +24,7 @@ const Register = () => {
   const { toast } = useToast();
   const { loading, error, sendRequest } = useAxiosRequest<any>();
 
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setFormData({
       ...formData,

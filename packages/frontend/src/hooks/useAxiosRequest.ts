@@ -6,13 +6,13 @@ import api from "../constants/api";
 
 interface AxiosHookResponse<T> {
   loading: boolean;
-  error: string | null;
+  error: any;
   sendRequest: (method: Method, url: string, data?: any, token?: any) => Promise<T>;
 }
 
 const useAxiosRequest = <T>(): AxiosHookResponse<T> => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<any>(null);
 
   const sendRequest = async (
     method: Method,
