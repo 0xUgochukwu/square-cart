@@ -1,3 +1,5 @@
+/** @format */
+
 import { format } from "date-fns";
 
 export const filterAndSortGraphData = (data: any) => {
@@ -46,12 +48,21 @@ export const formatAmount = (amount: number) => {
   });
 };
 
-export const encodeIfURL = (str: string) : string => {
+export const encodeIfURL = (str: string): string => {
   try {
     const url = new URL(str);
     console.log(url);
     return encodeURI(str);
   } catch (error) {
     return str;
+  }
+};
+
+export const parseId = (link: string) => {
+  switch (true) {
+    case link.includes("youtube.com/watch?v="):
+      return link.split("?v=")[1].split("&")[0];
+    default:
+      return null;
   }
 };
