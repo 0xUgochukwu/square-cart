@@ -21,7 +21,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { loading, error, sendRequest } = useAxiosRequest<any>();
 
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setFormData({
       ...formData,
@@ -37,6 +37,7 @@ const Login = () => {
         user: { picture, ...userDataWithoutPictureUrl },
         token,
       } = data.data;
+      // console.log(userDataWithoutPictureUrl);
       setCookie("@user", JSON.stringify(userDataWithoutPictureUrl), 1);
       setCookie("@token", JSON.stringify(token), 1);
       setLocalStorage("@picture", JSON.stringify(picture));

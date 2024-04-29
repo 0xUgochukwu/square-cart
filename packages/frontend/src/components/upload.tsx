@@ -22,7 +22,7 @@ const Upload = ({
   const [files, setFiles] = useState<string[]>([]);
 
   const handleUpdateFiles = (fileItems: FilePondFile[]) => {
-    const base64Files: string[] = fileItems.map((fileItem) => {
+    const base64Files: any = fileItems.map((fileItem) => {
       const reader = new FileReader();
       reader.readAsDataURL(fileItem.file);
       return new Promise<string>((resolve) => {

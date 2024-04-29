@@ -37,8 +37,16 @@ const EditProduct = () => {
   const { queries, handleDataUpdate } = Query(queryParamsArray);
   const { mutation } = Mutation();
 
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
+    setFormData({
+      ...formData,
+      [target.name]: target.value,
+    });
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const target = e.target as HTMLTextAreaElement;
     setFormData({
       ...formData,
       [target.name]: target.value,
@@ -144,7 +152,7 @@ const EditProduct = () => {
                   className='mt-2'
                   value={formData.info}
                   required
-                  onChange={(e) => handleFormChange(e)}
+                  onChange={(e) => handleTextAreaChange(e)}
                 />
               </div>
               <div>

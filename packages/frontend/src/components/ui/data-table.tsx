@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const initialRowSelection: { [key: number]: boolean } = {};
 
-    data.forEach((item, index) => {
+    data.forEach((item: any, index: number) => {
       if (item?.active) {
         initialRowSelection[index] = true;
       }
@@ -173,9 +173,9 @@ export function DataTable<TData, TValue>({
   };
 
   const handleFormChange = (
-    e: React.FormEvent<HTMLFormElement>,
-    inputName: string
-  ) => {
+    e: React.ChangeEvent<HTMLInputElement>,
+    inputName
+  : string) => {
     const target = e.target as HTMLInputElement;
     if (inputName === "video") {
       setVideoLink((prev) => ({
@@ -197,7 +197,7 @@ export function DataTable<TData, TValue>({
     }
   };
 
-  const handleFormSubmit = (id: string) => async () => {
+  const handleFormSubmit = async (id: string) => {
     try {
       setLoading(true);
       const content = {
@@ -302,11 +302,11 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, rowIndex) => (
+              table.getRowModel().rows.map((row: any, rowIndex) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell: any) => (
                     <TableCell key={cell.id} className=''>
                       {cell.column.id === "active" ? (
                         <div className='flex justify-center md:w-1/3 w-full'>
@@ -375,7 +375,7 @@ export function DataTable<TData, TValue>({
                                 <div className='mt-2'>
                                   <Label>Start Time</Label>
                                   <Input
-                                    type='time'
+                                    type='number'
                                     placeholder='Start Time'
                                     name={`start_${row.original._id}`}
                                     className='mt-2'
@@ -391,7 +391,7 @@ export function DataTable<TData, TValue>({
                                 <div className='mt-2'>
                                   <Label>End Time</Label>
                                   <Input
-                                    type='time'
+                                    type='number'
                                     placeholder='End Time'
                                     className='mt-2'
                                     name={`end_${row.original._id}`}
@@ -400,7 +400,7 @@ export function DataTable<TData, TValue>({
                                     onChange={(e) => handleFormChange(e, "end")}
                                   />
                                 </div>
-                                <div className='mt-2 pb-5'>
+                                <DialogClose className='mt-2 pb-5 w-full'>
                                   <Button
                                     className='w-full mt-5'
                                     onClick={() =>
@@ -416,7 +416,7 @@ export function DataTable<TData, TValue>({
                                       "Submit"
                                     )}
                                   </Button>
-                                </div>
+                                </DialogClose>
                               </DialogDescription>
                             </DialogHeader>
                           </DialogContent>

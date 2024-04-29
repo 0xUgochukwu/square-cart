@@ -1,7 +1,6 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import Mutation from "../../api/mutation";
@@ -13,12 +12,11 @@ import { useToast } from "../../components/ui/use-toast";
 import "../../components/embla-carousel/styles/base.css";
 import "../../components/embla-carousel/styles/sandbox.css";
 import "../../components/embla-carousel/styles/embla.css";
-import { getCookieData, getCookie, getLocalStorage, setCookie, setLocalStorage } from "../../services/storage";
+import { getCookieData, getLocalStorage, setCookie, setLocalStorage } from "../../services/storage";
 import { AntDUploadSingle } from "../../components/antd-upload";
 
 const Settings = () => {
   const { toast } = useToast();
-  const [user, setUser] = useState<any>({});
   const [formData, setFormData] = useState<any>({
     name: "",
     tiktok: "",
@@ -27,7 +25,7 @@ const Settings = () => {
 
   const { mutation } = Mutation();
 
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setFormData({
       ...formData,
@@ -53,8 +51,11 @@ const Settings = () => {
         picture: update.data.picture,
         tiktok: update.data.tiktok,
       }));
-      setCookie("@user", JSON.stringify(update.data), 1);
-      setLocalStorage("@picture", JSON.stringify(update.data.picture));
+       const {
+         data: { picture, ...userDataWithoutPictureUrl },
+       } = update;
+      setCookie("@user", JSON.stringify(userDataWithoutPictureUrl), 1);
+      setLocalStorage("@picture", JSON.stringify(picture));
       toast({
         title: "Success! All done.",
         description: "Item updated successfully",
