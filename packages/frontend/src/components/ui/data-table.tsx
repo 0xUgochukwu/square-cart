@@ -201,7 +201,8 @@ export function DataTable<TData, TValue>({
   const handleFormSubmit = async (id: string) => {
     try {
       setLoading(true);
-      if (!parseId(videoLink[`youtube_id_${id}`])) {
+      const videoLinkRegex = parseId(videoLink[`youtube_id_${id}`]);
+      if (!videoLinkRegex) {
         toast({
           variant: "destructive",
           title: "Uh oh!",
@@ -211,7 +212,7 @@ export function DataTable<TData, TValue>({
         return;
       }
       const content = {
-        youtube_id: videoLink[`youtube_id_${id}`],
+        youtube_id: videoLinkRegex,
         start: startTime[`start_${id}`],
         end: endTime[`end_${id}`],
       };
