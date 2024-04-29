@@ -49,7 +49,7 @@ const Shop = ({ socket }) => {
 
     useEffect(() => {
         setInterval(() => {
-            // getProduct();
+            getProduct();
         }, 5000);
     }, []);
 

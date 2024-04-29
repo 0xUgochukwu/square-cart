@@ -65,6 +65,7 @@ import Mutation from "../../api/mutation";
 import { useLocation } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Label } from "./label";
+import { parseId } from "../../services/helpers";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -174,8 +175,8 @@ export function DataTable<TData, TValue>({
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    inputName
-  : string) => {
+    inputName: string
+  ) => {
     const target = e.target as HTMLInputElement;
     if (inputName === "video") {
       setVideoLink((prev) => ({
@@ -200,8 +201,18 @@ export function DataTable<TData, TValue>({
   const handleFormSubmit = async (id: string) => {
     try {
       setLoading(true);
+      const videoLinkRegex = parseId(videoLink[`youtube_id_${id}`]);
+      if (!videoLinkRegex) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh!",
+          description: "Invalid youtube id passed.",
+          action: <ToastAction altText='done'>done</ToastAction>,
+        });
+        return;
+      }
       const content = {
-        youtube_id: videoLink[`youtube_id_${id}`],
+        youtube_id: videoLinkRegex,
         start: startTime[`start_${id}`],
         end: endTime[`end_${id}`],
       };
