@@ -53,6 +53,8 @@ app.use(cors());
 
 app.use("/v1/api", v1);
 
+socket.initSocket(server);
+
 app.get("/", (req, res) => {
     res.status(200).json({
         message: "aPi Is LiVe!",
@@ -68,7 +70,6 @@ app.get("/", (req, res) => {
 // });
 
 // socketTransactions(io);
-socket.initSocket(server);
 
 const PORT = process.env.PORT || 5505;
 
