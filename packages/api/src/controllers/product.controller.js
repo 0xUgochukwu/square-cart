@@ -283,7 +283,8 @@ class Controller {
 
     async refundItem(req, res) {
         try {
-            const { id, reason } = req.body;
+            const { id } = req.body;
+            const reason = req.body.reason;
             const tran = await Transaction.findOne({
                 _id: id,
                 type: "PAID",
@@ -302,7 +303,10 @@ class Controller {
                 });
 
             if (!tran) {
-                return errorResponse(res, "Transaction not found!");
+                return errorResponse(
+                    res,
+                    "Transaction not found or already refunded!"
+                );
             }
 
             // console.log(tran.item);
@@ -338,7 +342,7 @@ class Controller {
 
             sendResponse(res, 200, true, "Transaction refunded successfully!");
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error);
             errorResponse(res);
         }
     }

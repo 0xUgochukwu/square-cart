@@ -1,5 +1,7 @@
 const start = () => {
-    const API = "http://localhost:2020/v1/api/customer/item?youtube_id=";
+    // const API = "http://localhost:2020/v1/api/customer/item?youtube_id=";
+    const API =
+        "https://square-hackathon.onrender.com/v1/api/customer/item?youtube_id=";
 
     const parseId = () => {
         const link = document.location.href;
