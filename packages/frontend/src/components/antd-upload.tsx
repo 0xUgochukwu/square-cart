@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PlusOutlined, UploadOutlined} from "@ant-design/icons";
-import type {
+import {
   GetProp,
   UploadFile,
   UploadProps,
@@ -13,6 +13,11 @@ import { Button, Space, Upload } from "antd";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
+interface AntDUploadProps {
+  images: string[];
+  selectImageFn: (images: any) => void;
+}
+
 const getBase64 = (file: FileType): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,12 +26,9 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const AntDUpload: React.FC = ({
+const AntDUpload: React.FC<AntDUploadProps> = ({
   images,
   selectImageFn,
-}: {
-  images: string[];
-  selectImageFn: (images: any) => void;
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -54,7 +56,7 @@ const AntDUpload: React.FC = ({
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-    const imgPromises = newFileList.map(async (item) => {
+    const imgPromises = newFileList.map(async (item: any) => {
       if (
         item.originFileObj instanceof Blob ||
         item.originFileObj instanceof File
@@ -68,7 +70,6 @@ const AntDUpload: React.FC = ({
     const img = await Promise.all(imgPromises);
     selectImageFn(img.filter((base64) => base64 !== null));
   };
-
 
   useEffect(() => {
     setFileList(previousImages);
@@ -104,17 +105,17 @@ const AntDUpload: React.FC = ({
   );
 };
 
-const AntDUploadSingle: React.FC = ({
-  selectImageFn
+const AntDUploadSingle: React.FC<{ selectImageFn: (images: any) => void }> = ({
+  selectImageFn,
 }: {
-  selectImageFn: any;
+  selectImageFn: (images: any) => void;
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-    const imgPromises = newFileList.map(async (item) => {
+    const imgPromises = newFileList.map(async (item: any) => {
       if (
         item.originFileObj instanceof Blob ||
         item.originFileObj instanceof File
@@ -127,7 +128,7 @@ const AntDUploadSingle: React.FC = ({
     });
     const img = await Promise.all(imgPromises);
     const images = img.filter((base64) => base64 !== null);
-    selectImageFn(images)
+    selectImageFn(images);
   };
   return (
     <Space direction='vertical' style={{ width: "100%" }} size='large'>

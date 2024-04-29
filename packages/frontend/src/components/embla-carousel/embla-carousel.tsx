@@ -112,8 +112,12 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
           {slides.map((item, index) => (
             <div className='embla__slide' key={index}>
               <div className='embla__slide__number overflow-hidden flex'>
-                {/* <div className={`embla__slide__number bg-[url('${item}')] bg-cover`}></div> */}
-                <img src={item} alt='' className='w-full' />
+                {typeof item === "number" ? (
+                  <div
+                    className={`embla__slide__number bg-[url('${item}')] bg-cover`}></div>
+                ) : (
+                  <img src={item} alt='' className='w-full' />
+                )}
               </div>
             </div>
           ))}
