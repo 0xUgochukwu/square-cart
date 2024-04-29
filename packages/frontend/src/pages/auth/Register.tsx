@@ -100,7 +100,7 @@ const Register = () => {
             type='text'
             className='w-full'
             id='social'
-            placeholder='Social media links (TikTok, Instagram, Youtube)'
+            placeholder='tiktok_username'
             name='tiktok'
             value={formData.tiktok}
             required
