@@ -16,10 +16,6 @@ router.delete("/:productId", auth("user"), (req, res) => {
     Controller.deleteItem(req, res);
 });
 
-router.post("/:productId", auth("user"), (req, res) => {
-    Controller.updateItem(req, res);
-});
-
 router.post("/buy/:productId", auth("customer"), (req, res) => {
     Controller.buyItem(req, res);
 });
@@ -40,12 +36,16 @@ router.get("/watch", (req, res) => {
     Controller.watchForPurchase(req, res);
 });
 
-router.get("/:productId", auth("user"), (req, res) => {
-    Controller.getItem(req, res);
-});
-
 router.post("/refund", auth("user"), (req, res) => {
     Controller.refundItem(req, res);
+});
+
+router.post("/:productId", auth("user"), (req, res) => {
+    Controller.updateItem(req, res);
+});
+
+router.get("/:productId", auth("user"), (req, res) => {
+    Controller.getItem(req, res);
 });
 
 router.post(

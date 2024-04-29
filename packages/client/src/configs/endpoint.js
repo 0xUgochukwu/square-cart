@@ -1,7 +1,7 @@
 let api =
     document.location.hostname == "localhost"
         ? "http://localhost:2020"
-        : "https://filesnap-r1x8.onrender.com";
+        : "https://square-hackathon.onrender.com";
 
 if (document.location.hostname.startsWith("172")) {
     api = "http://" + document.location.hostname + ":2020";
