@@ -70,7 +70,7 @@ app.get("/", (req, res) => {
 // });
 
 // socketTransactions(io);
-socket.initSocket(server);
+// socket.initSocket(server);
 
 app.get("/", (req, res) => {
     res.status(200).json({
