@@ -36,7 +36,7 @@ const Orders = () => {
         <div className='w-full overflow-x-scroll bg-white p-4 rounded-xl'>
           <DataTable
             columns={columns}
-            data={queries[0].data.data}
+            data={queries[0]?.data?.data || []}
             onDataUpdate={handleDataUpdate}
           />
         </div>
