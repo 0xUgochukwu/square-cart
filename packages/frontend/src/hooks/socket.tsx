@@ -1,7 +1,7 @@
 /** @format */
 
 import io from "socket.io-client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getCookieData } from "../services/storage";
 import { useToast } from "../components/ui/use-toast";
 import { ENDPOINT } from "../constants/api";
@@ -10,7 +10,6 @@ import { ToastAction } from "../components/ui/toast";
 let socket: any = null;
 
 function Socket() {
-  const [transaction, setTransaction] = useState<any>(null);
   const { toast } = useToast();
   const user: any = getCookieData("user");
 
@@ -26,14 +25,14 @@ function Socket() {
     }
 
     const handleSoldEvent = (msg: any) => {
-      console.log(msg)
-      setTransaction(msg);
+      const { customer, item } = msg.transaction;
       toast({
         title: "WooHoo!!!",
-        description: `${msg.customer.name} just bought ${msg.item.name}`,
+        description: `${customer.name} just bought ${item.name}`,
         action: <ToastAction altText='done'>done</ToastAction>,
       });
     };
+
 
     socket.on(`sold-${user._id}`, handleSoldEvent);
 
@@ -44,7 +43,7 @@ function Socket() {
     };
   }, [user, toast]);
 
-  return transaction;
+  return null;
 }
 
 export default Socket;
