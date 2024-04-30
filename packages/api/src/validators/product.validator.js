@@ -1,8 +1,8 @@
 const Joi = require("joi");
 
 const addProductSchema = Joi.object({
-    name: Joi.string().min(6).max(15).required().label("Product Name"),
-    info: Joi.string().min(6).max(150).required(),
+    name: Joi.string().min(5).max(50).required().label("Product Name"),
+    info: Joi.string().min(5).max(150).required(),
     price: Joi.number().min(1).max(10000).required(),
     quantity: Joi.number().optional(),
     images: Joi.array()
