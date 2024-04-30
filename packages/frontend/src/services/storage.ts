@@ -45,7 +45,7 @@ export const getLocalStorage = (key: string) => {
 
 export const getCookieData = (dataType: string) => {
   const data = getCookie(dataType === "user" ? "@user" : "@token");
-  console.log(data);
+  // console.log(data);
   if (data) {
     const jsonData = JSON.parse(data);
     return dataType === "user"

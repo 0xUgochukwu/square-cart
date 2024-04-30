@@ -65,36 +65,33 @@ const Shop = () => {
     console.log(formData);
   };
 
-  const handleFormSubmit = () => {
-    const data = { method: "post", url: "product/add", content: formData };
-    mutation.mutate(data);
-    setFormData({
-      name: "",
-      price: "",
-      quantity: "",
-      category: "",
-      image: [],
-    });
-  };
-
-  useEffect(() => {
-    if (mutation.isError) {
+  const handleFormSubmit = async () => {
+    try {
+      const data = { method: "post", url: "product/add", content: formData };
+      const addNewProduct = await mutation.mutateAsync(data);
+      if (addNewProduct.success) {
+        setFormData({
+          name: "",
+          price: "",
+          quantity: "",
+          category: "",
+          image: [],
+        });
+        toast({
+          title: "Success! All done.",
+          description: "Product added successfully!",
+          action: <ToastAction altText='done'>done</ToastAction>,
+        });
+      }
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Uh oh! we've got a problem.",
-        description: "something went wrong, please retry again",
+        description: error?.response?.data?.message,
         action: <ToastAction altText='Try again'>Try again</ToastAction>,
       });
     }
-    if (mutation.isSuccess) {
-      handleDataUpdate();
-      toast({
-        title: "Success! All done.",
-        description: "Product added successfully!",
-        action: <ToastAction altText='done'>done</ToastAction>,
-      });
-    }
-  }, [mutation.isError, mutation.isSuccess]);
+  };
 
   useEffect(() => {
     if (queries[0].data && queries[1].data) {
