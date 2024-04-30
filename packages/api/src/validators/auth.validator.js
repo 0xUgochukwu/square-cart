@@ -14,7 +14,7 @@ const signUpSchema = Joi.object({
             "Password must contain at least one uppercase letter and one number"
         )
         .required(),
-    name: Joi.string().min(6).max(15).required(),
+    name: Joi.string().min(6).max(50).required(),
     tiktok: Joi.string().min(3).max(15).required(),
 });
 
