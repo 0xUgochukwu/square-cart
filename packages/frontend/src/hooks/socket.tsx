@@ -1,32 +1,49 @@
 /** @format */
 
 import io from "socket.io-client";
-import { ENDPOINT } from "../constants/api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getCookieData } from "../services/storage";
-import { ToastAction } from "../components/ui/toast";
 import { useToast } from "../components/ui/use-toast";
+import { ENDPOINT } from "../constants/api";
+import { ToastAction } from "../components/ui/toast";
 
-const socket = io(ENDPOINT);
+let socket: any = null;
 
-const Socket = () => {
-  const [transaction, setTransaction] = useState<any>(null);
+function Socket() {
   const { toast } = useToast();
-  const data = getCookieData("user");
-  // const [socket, setSocket] = useState(null);
+  const user: any = getCookieData("user");
 
   useEffect(() => {
-    socket.on(`sold-${data._id.toString()}`, (msg) => {
-      setTransaction((prevMessages: any) => [...prevMessages, msg]);
+    if (!user) return;
+
+    if (!socket) {
+      socket = io(ENDPOINT);
+
+      socket.on("connect_error", (error: Error) => {
+        console.error("Socket connection error:", error);
+      });
+    }
+
+    const handleSoldEvent = (msg: any) => {
+      const { customer, item } = msg.transaction;
       toast({
         title: "WooHoo!!!",
-        description: `${msg.transaction.customer.name} just bought ${msg.transaction.item.name}`,
+        description: `${customer.name} just bought ${item.name}`,
         action: <ToastAction altText='done'>done</ToastAction>,
       });
-    });
-  }, [data._id, toast]);
+    };
 
-  return transaction;
-};
+
+    socket.on(`sold-${user._id}`, handleSoldEvent);
+
+    return () => {
+      if (socket) {
+        socket.off(`sold-${user._id}`, handleSoldEvent);
+      }
+    };
+  }, [user, toast]);
+
+  return null;
+}
 
 export default Socket;
