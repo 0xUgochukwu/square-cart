@@ -60,8 +60,9 @@ const Shop = () => {
     const target = e.target as HTMLTextAreaElement;
     setFormData({
       ...formData,
-      [target.name]: target.value,
+      info: target.value,
     });
+    console.log(formData);
   };
 
   const handleFormSubmit = () => {
